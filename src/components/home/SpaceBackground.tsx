@@ -1,408 +1,766 @@
-import { useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import './SpaceBackground.scss';
+import { motion } from 'framer-motion';
 
-interface SpaceBackgroundProps {
-  interactive?: boolean;
-}
-
-const SpaceBackground: React.FC<SpaceBackgroundProps> = ({ interactive = true }) => {
+const SpaceBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const starsRef = useRef<THREE.Points | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const starsRef = useRef<THREE.Points[]>([]);
   const nebulaRef = useRef<THREE.Points | null>(null);
-  const planetsRef = useRef<THREE.Group | null>(null);
-  const animationIdRef = useRef<number | null>(null);
-  const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-
+  const moonRef = useRef<THREE.Mesh | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  // Initialize THREE.js scene
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Створюємо сцену
+    if (!containerRef.current || !canvasRef.current) return;
+    
+    // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-
-    // Налаштування камери
-    const aspectRatio = window.innerWidth / window.innerHeight;
-    const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-    camera.position.z = 15;
+    
+    // Camera setup
+    const camera = new THREE.PerspectiveCamera(
+      70,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      2000
+    );
+    camera.position.set(0, 0, 30);
     cameraRef.current = camera;
-
-    // Налаштування рендерера
-    const renderer = new THREE.WebGLRenderer({ 
-      alpha: true, 
-      antialias: true 
+    
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
+      alpha: true,
+      antialias: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    containerRef.current.appendChild(renderer.domElement);
+    renderer.setClearColor(new THREE.Color('#070714'), 1);
     rendererRef.current = renderer;
-
-    // Створення зірок
-    const createStars = () => {
-      const starGeometry = new THREE.BufferGeometry();
-      const starCount = 2000;
-      const positions = new Float32Array(starCount * 3);
-      const sizes = new Float32Array(starCount);
-      const colors = new Float32Array(starCount * 3);
-
-      for (let i = 0; i < starCount; i++) {
-        const i3 = i * 3;
-        // Розподіляємо зірки у сферичній формі навколо камери
-        const radius = 50 + Math.random() * 50;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.random() * Math.PI;
-
-        positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-        positions[i3 + 2] = radius * Math.cos(phi);
-
-        // Випадковий розмір для кожної зірки
-        sizes[i] = Math.random() * 1.5;
-
-        // Колір зірок з відтінками синього та фіолетового
-        const colorChoice = Math.random();
-        if (colorChoice > 0.9) {
-          // Блакитні зірки
-          colors[i3] = 0.7;
-          colors[i3 + 1] = 0.8;
-          colors[i3 + 2] = 1;
-        } else if (colorChoice > 0.8) {
-          // Фіолетові зірки
-          colors[i3] = 0.8;
-          colors[i3 + 1] = 0.6;
-          colors[i3 + 2] = 1;
-        } else if (colorChoice > 0.7) {
-          // Жовтуваті зірки
-          colors[i3] = 1;
-          colors[i3 + 1] = 0.9;
-          colors[i3 + 2] = 0.7;
-        } else {
-          // Білі зірки
-          colors[i3] = 1;
-          colors[i3 + 1] = 1;
-          colors[i3 + 2] = 1;
-        }
-      }
-
-      starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      starGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-      starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-      // Вертексний шейдер для точок
-      const vertexShader = `
-        attribute float size;
-        attribute vec3 color;
-        varying vec3 vColor;
-        void main() {
-          vColor = color;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = size * (300.0 / -mvPosition.z);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `;
-
-      // Фрагментний шейдер для точок з ефектом світіння
-      const fragmentShader = `
-        varying vec3 vColor;
-        void main() {
-          float distance = length(gl_PointCoord - vec2(0.5, 0.5));
-          if (distance > 0.5) discard;
-          gl_FragColor = vec4(vColor, 1.0) * (1.0 - distance * 2.0);
-        }
-      `;
-
-      const starMaterial = new THREE.ShaderMaterial({
-        uniforms: {},
-        vertexShader,
-        fragmentShader,
-        transparent: true,
-        blending: THREE.AdditiveBlending
-      });
-
-      const stars = new THREE.Points(starGeometry, starMaterial);
-      scene.add(stars);
-      starsRef.current = stars;
-    };
-
-    // Створення туманності
-    const createNebula = () => {
-      const nebulaGeometry = new THREE.BufferGeometry();
-      const particleCount = 500;
-      const positions = new Float32Array(particleCount * 3);
-      const colors = new Float32Array(particleCount * 3);
-      const sizes = new Float32Array(particleCount);
-
-      // Основні кольори туманності
-      const nebulaColors = [
-        new THREE.Color(0x5500ff), // фіолетовий
-        new THREE.Color(0x00ddff), // блакитний
-        new THREE.Color(0xff00aa)  // рожевий
-      ];
-
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        
-        // Розміщуємо частинки туманності у формі спіралі
-        const angle = (i / particleCount) * Math.PI * 10;
-        const radius = Math.random() * 15 + 10;
-        const spiral = Math.random() * 5;
-        
-        positions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * spiral;
-        positions[i3 + 1] = (Math.random() - 0.5) * 5;
-        positions[i3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * spiral;
-
-        // Інтерполюємо між кольорами туманності
-        const color = nebulaColors[Math.floor(Math.random() * nebulaColors.length)];
-        colors[i3] = color.r;
-        colors[i3 + 1] = color.g;
-        colors[i3 + 2] = color.b;
-
-        // Різні розміри частинок
-        sizes[i] = Math.random() * 5 + 2;
-      }
-
-      nebulaGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      nebulaGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      nebulaGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-      // Вертексний шейдер для туманності
-      const vertexShader = `
-        attribute float size;
-        attribute vec3 color;
-        varying vec3 vColor;
-        void main() {
-          vColor = color;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = size * (300.0 / -mvPosition.z);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `;
-
-      // Фрагментний шейдер для ефекту світіння туманності
-      const fragmentShader = `
-        varying vec3 vColor;
-        void main() {
-          float distance = length(gl_PointCoord - vec2(0.5, 0.5));
-          if (distance > 0.5) discard;
-          float opacity = 0.3 * (1.0 - distance * 1.5);
-          gl_FragColor = vec4(vColor, opacity);
-        }
-      `;
-
-      const nebulaMaterial = new THREE.ShaderMaterial({
-        uniforms: {},
-        vertexShader,
-        fragmentShader,
-        transparent: true,
-        blending: THREE.AdditiveBlending
-      });
-
-      const nebula = new THREE.Points(nebulaGeometry, nebulaMaterial);
-      scene.add(nebula);
-      nebulaRef.current = nebula;
-    };
-
-    // Створення планет
-    const createPlanets = () => {
-      const planetsGroup = new THREE.Group();
-      
-      // Функція для створення планети
-      const createPlanet = (radius: number, color: number, wireframe: boolean, position: THREE.Vector3) => {
-        const planetGeometry = new THREE.SphereGeometry(radius, 32, 32);
-        const planetMaterial = new THREE.MeshBasicMaterial({ 
-          color, 
-          wireframe,
-          transparent: true,
-          opacity: 0.8
-        });
-        const planet = new THREE.Mesh(planetGeometry, planetMaterial);
-        planet.position.copy(position);
-        
-        // Створюємо кільця для деяких планет
-        if (Math.random() > 0.6) {
-          const ringGeometry = new THREE.RingGeometry(radius * 1.3, radius * 1.7, 32);
-          const ringMaterial = new THREE.MeshBasicMaterial({ 
-            color, 
-            wireframe: true,
-            transparent: true,
-            opacity: 0.5,
-            side: THREE.DoubleSide
-          });
-          const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-          
-          // Нахиляємо кільця
-          ring.rotation.x = Math.PI / 2;
-          ring.rotation.y = Math.random() * Math.PI / 4;
-          
-          planet.add(ring);
-        }
-        
-        return planet;
-      };
-      
-      // Створюємо кілька планет з різними параметрами
-      const planets = [
-        createPlanet(0.8, 0x00dbde, true, new THREE.Vector3(-12, 3, -10)),
-        createPlanet(1.2, 0xfc00ff, true, new THREE.Vector3(15, -4, -15)),
-        createPlanet(0.5, 0xffcc00, true, new THREE.Vector3(5, 8, -20)),
-        createPlanet(1.5, 0x00ffaa, true, new THREE.Vector3(-8, -6, -25))
-      ];
-      
-      // Додаємо планети до групи
-      planets.forEach(planet => {
-        // Зберігаємо дані для анімації
-        planet.userData = {
-          rotationSpeed: Math.random() * 0.01 + 0.005,
-          orbitRadius: planet.position.length(),
-          orbitSpeed: Math.random() * 0.0005 + 0.0002,
-          initialAngle: Math.atan2(planet.position.z, planet.position.x),
-          orbitCenter: new THREE.Vector3(0, planet.position.y, 0)
-        };
-        
-        planetsGroup.add(planet);
-      });
-      
-      scene.add(planetsGroup);
-      planetsRef.current = planetsGroup;
-    };
-
-    // Ініціалізуємо елементи сцени
-    createStars();
-    createNebula();
-    createPlanets();
     
-    // Функція анімації
-    const animate = () => {
-      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
-      
-      // Обертаємо зірки
-      if (starsRef.current) {
-        starsRef.current.rotation.y += 0.0001;
-      }
-      
-      // Анімуємо туманність
-      if (nebulaRef.current) {
-        nebulaRef.current.rotation.y += 0.0002;
-        
-        // Змінюємо розмір туманності для ефекту пульсації
-        const time = Date.now() * 0.0005;
-        const scale = 1 + Math.sin(time) * 0.04;
-        nebulaRef.current.scale.set(scale, scale, scale);
-      }
-      
-      // Анімуємо планети
-      if (planetsRef.current) {
-        planetsRef.current.children.forEach(planet => {
-          // Обертання навколо своєї осі
-          planet.rotation.y += planet.userData.rotationSpeed;
-          
-          // Рух по орбіті
-          const time = Date.now() * planet.userData.orbitSpeed;
-          const angle = planet.userData.initialAngle + time;
-          const radius = planet.userData.orbitRadius;
-          
-          planet.position.x = Math.cos(angle) * radius;
-          planet.position.z = Math.sin(angle) * radius;
-          
-          // Анімуємо кільця, якщо вони є
-          if (planet.children.length > 0) {
-            planet.children[0].rotation.z += 0.001;
-          }
-        });
-      }
-      
-      // Рух камери в залежності від положення миші (якщо інтерактивний режим)
-      if (interactive && cameraRef.current) {
-        // Плавно рухаємо камеру до цільової позиції
-        cameraRef.current.position.x += (mouseRef.current.x * 2 - cameraRef.current.position.x) * 0.02;
-        cameraRef.current.position.y += (mouseRef.current.y * 2 - cameraRef.current.position.y) * 0.02;
-        
-        // Спрямовуємо камеру на центр сцени
-        cameraRef.current.lookAt(new THREE.Vector3(0, 0, 0));
-      }
-      
-      // Рендеримо сцену
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-      
-      // Продовжуємо анімаційний цикл
-      animationIdRef.current = requestAnimationFrame(animate);
-    };
+    // Create stars
+    createStarLayers();
     
-    // Запускаємо анімацію
-    animate();
+    // Create nebula
+    createNebulae();
     
-    // Обробник руху миші для інтерактивності
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseRef.current = {
-        x: (event.clientX / window.innerWidth - 0.5) * 0.5,
-        y: (event.clientY / window.innerHeight - 0.5) * 0.5
-      };
-    };
+    // Create moon
+    createMoon();
     
-    // Додаємо обробник руху миші, якщо включений інтерактивний режим
-    if (interactive) {
-      window.addEventListener('mousemove', handleMouseMove);
-    }
-    
-    // Обробник зміни розміру вікна
+    // Handle resize
     const handleResize = () => {
       if (!cameraRef.current || !rendererRef.current) return;
       
-      // Оновлюємо співвідношення сторін камери
-      cameraRef.current.aspect = window.innerWidth / window.innerHeight;
-      cameraRef.current.updateProjectionMatrix();
-      
-      // Оновлюємо розмір рендерера
-      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
     
     window.addEventListener('resize', handleResize);
+    setLoaded(true);
     
-    // Очищення ресурсів при розмонтуванні компонента
     return () => {
-      if (interactive) {
-        window.removeEventListener('mousemove', handleMouseMove);
-      }
       window.removeEventListener('resize', handleResize);
-      
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
       
-      if (rendererRef.current && rendererRef.current.domElement && containerRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement);
-      }
-      
-      // Очищуємо Three.js об'єкти
-      if (starsRef.current) {
-        starsRef.current.geometry.dispose();
-        (starsRef.current.material as THREE.Material).dispose();
-      }
-      
-      if (nebulaRef.current) {
-        nebulaRef.current.geometry.dispose();
-        (nebulaRef.current.material as THREE.Material).dispose();
-      }
-      
-      if (planetsRef.current) {
-        planetsRef.current.children.forEach(planet => {
-          (planet as THREE.Mesh).geometry.dispose();
-          ((planet as THREE.Mesh).material as THREE.Material).dispose();
-          
-          // Очищуємо кільця, якщо вони є
-          if (planet.children.length > 0) {
-            (planet.children[0] as THREE.Mesh).geometry.dispose();
-            ((planet.children[0] as THREE.Mesh).material as THREE.Material).dispose();
+      // Clean up resources
+      scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+          if (object.material instanceof THREE.Material) {
+            object.material.dispose();
+          } else if (Array.isArray(object.material)) {
+            object.material.forEach(material => material.dispose());
           }
-        });
+        } else if (object instanceof THREE.Points) {
+          object.geometry.dispose();
+          if (object.material instanceof THREE.Material) {
+            object.material.dispose();
+          }
+        }
+      });
+      
+      renderer.dispose();
+    };
+  }, []);
+  
+  // Handle mouse movement for parallax effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 2,
+        y: (e.clientY / window.innerHeight - 0.5) * 2
+      });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+  
+  // Animation loop
+  useEffect(() => {
+    if (!loaded) return;
+    
+    const animate = () => {
+      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
+      
+      // Apply subtle camera movement based on mouse position
+      cameraRef.current.position.x += (mousePosition.x * 2 - cameraRef.current.position.x) * 0.01;
+      cameraRef.current.position.y += (-mousePosition.y * 2 - cameraRef.current.position.y) * 0.01;
+      cameraRef.current.lookAt(0, 0, 0);
+      
+      // Animate stars
+      starsRef.current.forEach((starLayer, index) => {
+        const rotationSpeed = 0.0001 * (index + 1) * 0.5;
+        starLayer.rotation.y += rotationSpeed;
+        starLayer.rotation.z += rotationSpeed * 0.7;
+      });
+
+      // Animate nebulae
+      if (nebulaRef.current) {
+        nebulaRef.current.rotation.z += 0.0001;
+        
+        // Subtle pulsating effect
+        const time = Date.now() * 0.0003;
+        const scale = 1 + Math.sin(time) * 0.02;
+        nebulaRef.current.scale.set(scale, scale, scale);
+      }
+      
+      // Animate moon
+      if (moonRef.current) {
+        moonRef.current.rotation.y += 0.0005;
+        moonRef.current.position.y = -10 + Math.sin(Date.now() * 0.0005) * 0.2;
+      }
+      
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [interactive]);
+  }, [loaded, mousePosition]);
+  
+  // Create multiple layers of stars with different properties
+  const createStarLayers = () => {
+    if (!sceneRef.current) return;
+    
+    // Create far distant stars - many tiny dots
+    createStarLayer({
+      count: 3000,
+      maxSize: 1.2,
+      minSize: 0.2,
+      spread: 1000,
+      depth: 1000,
+      colors: [
+        new THREE.Color(0xFFFFFF),  // White
+        new THREE.Color(0xCCDDFF),  // Light blue
+        new THREE.Color(0xE6C8FF),  // Light purple
+        new THREE.Color(0xFFD6AD)   // Light orange
+      ],
+      colorDistribution: [0.7, 0.1, 0.1, 0.1] // 70% white, 10% for each other color
+    });
+    
+    // Create mid-distance stars - medium-sized
+    createStarLayer({
+      count: 800,
+      maxSize: 1.8,
+      minSize: 0.8,
+      spread: 500,
+      depth: 600,
+      colors: [
+        new THREE.Color(0xFFFFFF),   // White
+        new THREE.Color(0x6699FF),   // Blue
+        new THREE.Color(0x9966FF),   // Purple
+        new THREE.Color(0xFF9966)    // Orange
+      ],
+      colorDistribution: [0.5, 0.2, 0.2, 0.1]
+    });
+    
+    // Create near stars - fewer but brighter
+    createStarLayer({
+      count: 100,
+      maxSize: 2.5,
+      minSize: 1.2,
+      spread: 300,
+      depth: 400,
+      colors: [
+        new THREE.Color(0xFFFFFF),   // White
+        new THREE.Color(0x00AAFF),   // Bright blue
+        new THREE.Color(0xAA00FF),   // Bright purple
+        new THREE.Color(0xFFAA00)    // Bright orange/yellow
+      ],
+      colorDistribution: [0.4, 0.2, 0.2, 0.2]
+    });
+  };
+  
+  // Create a layer of stars with specific properties
+  const createStarLayer = ({
+    count,
+    maxSize,
+    minSize,
+    spread,
+    depth,
+    colors,
+    colorDistribution
+  }: {
+    count: number;
+    maxSize: number;
+    minSize: number;
+    spread: number;
+    depth: number;
+    colors: THREE.Color[];
+    colorDistribution: number[];
+  }) => {
+    if (!sceneRef.current) return;
+    
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const colorsArray = new Float32Array(count * 3);
+    
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      
+      // Position - random in sphere
+      const radius = Math.random() * spread;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+      
+      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i3 + 2] = -depth + radius * Math.cos(phi);
+      
+      // Size - random between min and max
+      sizes[i] = Math.random() * (maxSize - minSize) + minSize;
+      
+      // Color - based on distribution
+      const colorRand = Math.random();
+      let colorIndex = 0;
+      let sum = 0;
+      
+      for (let j = 0; j < colorDistribution.length; j++) {
+        sum += colorDistribution[j];
+        if (colorRand <= sum) {
+          colorIndex = j;
+          break;
+        }
+      }
+      
+      const color = colors[colorIndex];
+      colorsArray[i3] = color.r;
+      colorsArray[i3 + 1] = color.g;
+      colorsArray[i3 + 2] = color.b;
+    }
+    
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    
+    // Shader material for stars with realistic glow
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        pointTexture: { value: generateStarTexture() }
+      },
+      vertexShader: `
+        attribute float size;
+        attribute vec3 color;
+        varying vec3 vColor;
+        void main() {
+          vColor = color;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * (150.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D pointTexture;
+        varying vec3 vColor;
+        void main() {
+          vec4 texture = texture2D(pointTexture, gl_PointCoord);
+          gl_FragColor = vec4(vColor, 1.0) * texture;
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+      transparent: true
+    });
+    
+    const stars = new THREE.Points(geometry, material);
+    starsRef.current.push(stars);
+    sceneRef.current.add(stars);
+  };
+  
+  // Generate a texture for stars
+  const generateStarTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return new THREE.Texture();
+    
+    const gradient = context.createRadialGradient(
+      16, 16, 0, 16, 16, 16
+    );
+    
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+    gradient.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 32, 32);
+    
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  };
+  
+  // Create colorful nebulae
+  const createNebulae = () => {
+    if (!sceneRef.current) return;
+    
+    // Main spiral nebula
+    createNebula({
+      count: 1000,
+      shape: 'spiral',
+      radius: 400,
+      height: 100,
+      colors: [
+        new THREE.Color(0x3311bb), // Deep blue
+        new THREE.Color(0x5522dd), // Blue purple
+        new THREE.Color(0x8800ff), // Bright purple
+        new THREE.Color(0xaa33ff), // Light purple
+      ],
+      position: new THREE.Vector3(0, 0, -300)
+    });
+    
+    // Smaller nebula clouds
+    createNebula({
+      count: 300,
+      shape: 'cloud',
+      radius: 150,
+      height: 50,
+      colors: [
+        new THREE.Color(0x0066ff), // Bright blue
+        new THREE.Color(0x5500ff), // Purple blue
+        new THREE.Color(0xff00aa), // Pink
+      ],
+      position: new THREE.Vector3(-200, 100, -200)
+    });
+    
+    createNebula({
+      count: 300,
+      shape: 'cloud',
+      radius: 200,
+      height: 60,
+      colors: [
+        new THREE.Color(0xff6644), // Orange
+        new THREE.Color(0xaa22ff), // Purple
+        new THREE.Color(0x2200aa), // Deep blue
+      ],
+      position: new THREE.Vector3(300, -150, -250)
+    });
+  };
+  
+  // Create a nebula with specific properties
+  const createNebula = ({
+    count,
+    shape,
+    radius,
+    height,
+    colors,
+    position
+  }: {
+    count: number;
+    shape: 'spiral' | 'cloud';
+    radius: number;
+    height: number;
+    colors: THREE.Color[];
+    position: THREE.Vector3;
+  }) => {
+    if (!sceneRef.current) return;
+    
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const colorsArray = new Float32Array(count * 3);
+    
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      
+      if (shape === 'spiral') {
+        // Spiral shape
+        const angle = i / count * Math.PI * 10;
+        const r = (0.1 + 0.9 * Math.pow(i / count, 0.5)) * radius;
+        const x = Math.cos(angle) * r;
+        const y = (Math.random() - 0.5) * height;
+        const z = Math.sin(angle) * r;
+        
+        positions[i3] = x;
+        positions[i3 + 1] = y;
+        positions[i3 + 2] = z;
+      } else {
+        // Cloud shape
+        const r = Math.pow(Math.random(), 2) * radius;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        positions[i3] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        positions[i3 + 2] = r * Math.cos(phi);
+      }
+      
+      // Random size
+      sizes[i] = Math.random() * 15 + 5;
+      
+      // Random color from the palette
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      colorsArray[i3] = color.r;
+      colorsArray[i3 + 1] = color.g;
+      colorsArray[i3 + 2] = color.b;
+    }
+    
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    
+    // Shader for nebula gas
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        pointTexture: { value: generateNebulaTexture() }
+      },
+      vertexShader: `
+        attribute float size;
+        attribute vec3 color;
+        varying vec3 vColor;
+        void main() {
+          vColor = color;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * (200.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D pointTexture;
+        varying vec3 vColor;
+        void main() {
+          vec4 texture = texture2D(pointTexture, gl_PointCoord);
+          gl_FragColor = vec4(vColor, 0.7) * texture;
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      transparent: true,
+    });
+    
+    const nebula = new THREE.Points(geometry, material);
+    nebula.position.copy(position);
+    
+    sceneRef.current.add(nebula);
+    nebulaRef.current = nebula;
+  };
+  
+  // Generate a texture for nebula particles
+  const generateNebulaTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return new THREE.Texture();
+    
+    const gradient = context.createRadialGradient(
+      32, 32, 0, 32, 32, 32
+    );
+    
+    gradient.addColorStop(0, 'rgba(255,255,255,0.5)');
+    gradient.addColorStop(0.3, 'rgba(255,255,255,0.2)');
+    gradient.addColorStop(0.7, 'rgba(255,255,255,0.1)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 64, 64);
+    
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  };
+  
+  // Create detailed moon
+  const createMoon = () => {
+    if (!sceneRef.current) return;
+    
+    // Moon geometry
+    const geometry = new THREE.SphereGeometry(3, 32, 32);
+    
+    // Create a custom shader material for the moon with crater details
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 }
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec2 vUv;
+        
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        varying vec2 vUv;
+        
+        // Simplex noise function
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+        
+        float snoise(vec2 v) {
+          const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+          vec2 i  = floor(v + dot(v, C.yy));
+          vec2 x0 = v - i + dot(i, C.xx);
+          vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+          vec4 x12 = x0.xyxy + C.xxzz;
+          x12.xy -= i1;
+          i = mod289(i);
+          vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+          vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+          m = m*m;
+          m = m*m;
+          vec3 x = 2.0 * fract(p * C.www) - 1.0;
+          vec3 h = abs(x) - 0.5;
+          vec3 ox = floor(x + 0.5);
+          vec3 a0 = x - ox;
+          m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+          vec3 g;
+          g.x = a0.x * x0.x + h.x * x0.y;
+          g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+          return 130.0 * dot(m, g);
+        }
+        
+        void main() {
+          // Base moon color - light gray with slight blue tint
+          vec3 moonColor = vec3(0.9, 0.92, 0.95);
+          
+          // Create crater patterns with noise
+          float noise1 = snoise(vUv * 10.0);
+          float noise2 = snoise(vUv * 5.0);
+          float noise3 = snoise(vUv * 20.0);
+          
+          // Mix different noise scales for varied terrain
+          float combinedNoise = mix(noise1, noise2, 0.5) * 0.6 + noise3 * 0.4;
+          
+          // Create crater-like details
+          float craters = smoothstep(0.1, 0.4, abs(combinedNoise));
+          
+          // Apply lighting based on normal
+          float lighting = dot(vNormal, vec3(0.0, 0.0, 1.0));
+          lighting = smoothstep(0.1, 1.0, lighting) * 0.8 + 0.2;
+          
+          // Compose final color with crater details
+          vec3 finalColor = mix(moonColor * 0.7, moonColor, craters) * lighting;
+          
+          // Add a slight blue glow at the edges
+          float edge = 1.0 - max(0.0, dot(vNormal, vec3(0.0, 0.0, 1.0)));
+          finalColor = mix(finalColor, vec3(0.7, 0.8, 1.0), edge * edge * 0.2);
+          
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
+      `
+    });
+    
+    const moon = new THREE.Mesh(geometry, material);
+    moon.position.set(0, -10, -5);
+    moon.scale.set(1.2, 1.2, 1.2);
+    moonRef.current = moon;
+    
+    // Create a subtle glow effect around the moon
+    const glowGeometry = new THREE.SphereGeometry(3.5, 32, 32);
+    const glowMaterial = new THREE.ShaderMaterial({
+      uniforms: {},
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow(0.8 - dot(vNormal, vec3(0, 0, 1.0)), 4.0);
+          vec3 glowColor = vec3(0.7, 0.8, 1.0);
+          gl_FragColor = vec4(glowColor, 1.0 * intensity);
+        }
+      `,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+    
+    const moonGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+    moon.add(moonGlow);
+    
+    sceneRef.current.add(moon);
+  };
+  
+  // Draw constellations as subtle connected star patterns
+  const createConstellations = () => {
+    if (!sceneRef.current) return;
+    
+    // Simple constellation patterns (like Orion, Big Dipper, etc)
+    const constellations = [
+      // Orion-like
+      [
+        [-20, 30, -100],
+        [-15, 40, -100],
+        [-10, 35, -100],
+        [-15, 25, -100],
+        [-10, 15, -100],
+        [-5, 5, -100],
+        [0, 25, -100],
+        [10, 35, -100],
+        [15, 40, -100],
+        [5, 15, -100],
+        [15, 10, -100],
+      ],
+      // Big Dipper-like
+      [
+        [40, 60, -150],
+        [50, 65, -150],
+        [60, 67, -150],
+        [70, 63, -150],
+        [75, 55, -150],
+        [65, 50, -150],
+        [60, 40, -150],
+      ],
+      // Custom pattern
+      [
+        [-50, -40, -130],
+        [-40, -50, -130],
+        [-30, -45, -130],
+        [-20, -55, -130],
+        [-10, -40, -130],
+        [-20, -30, -130],
+        [-30, -25, -130],
+      ]
+    ];
+    
+    constellations.forEach(constellation => {
+      // Create stars at each point
+      const geometry = new THREE.BufferGeometry();
+      const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 2.5,
+        transparent: true,
+        blending: THREE.AdditiveBlending
+      });
+      
+      const positions = new Float32Array(constellation.length * 3);
+      
+      constellation.forEach((point, i) => {
+        positions[i * 3] = point[0];
+        positions[i * 3 + 1] = point[1];
+        positions[i * 3 + 2] = point[2];
+      });
+      
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      
+      const stars = new THREE.Points(geometry, material);
+      sceneRef.current?.add(stars);
+      
+      // Create lines connecting the stars
+      const linesMaterial = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending
+      });
+      
+      // Connect stars with lines
+      for (let i = 0; i < constellation.length - 1; i++) {
+        const lineGeometry = new THREE.BufferGeometry();
+        const linePositions = new Float32Array(6);
+        
+        linePositions[0] = constellation[i][0];
+        linePositions[1] = constellation[i][1];
+        linePositions[2] = constellation[i][2];
+        linePositions[3] = constellation[i + 1][0];
+        linePositions[4] = constellation[i + 1][1];
+        linePositions[5] = constellation[i + 1][2];
+        
+        lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+        
+        const line = new THREE.Line(lineGeometry, linesMaterial);
+        sceneRef.current?.add(line);
+      }
+    });
+  };
 
-  return <div className="space-background" ref={containerRef}></div>;
+  createConstellations()
+  
+  return (
+    <div ref={containerRef} className="cosmic-background">
+      <motion.div 
+        className="vignette-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
+      />
+      <canvas ref={canvasRef} className="cosmic-canvas" />
+      <style>{`
+        .cosmic-background {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          overflow: hidden;
+        }
+        
+        .cosmic-canvas {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+        
+        .vignette-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle at center,
+            transparent 40%,
+            rgba(5, 5, 25, 0.4) 80%,
+            rgba(5, 5, 25, 0.7) 100%
+          );
+          pointer-events: none;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default SpaceBackground;

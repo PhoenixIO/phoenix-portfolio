@@ -12,9 +12,9 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (!contentRef.current) return;
     
-    const title = contentRef.current.querySelector('.home-title');
-    const description = contentRef.current.querySelector('.home-description');
-    const button = contentRef.current.querySelector('.start-journey-btn');
+    const title = contentRef.current.querySelector('.home-title') as HTMLElement;
+    const description = contentRef.current.querySelector('.home-description') as HTMLElement;
+    const button = contentRef.current.querySelector('.start-journey-btn') as HTMLElement;
     
     // Анімації появи елементів з затримкою
     if (title) animations.fadeInUp(title, 0.2, 1);

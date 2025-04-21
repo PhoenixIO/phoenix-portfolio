@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'mixins';
+@use 'variables' as vars;
+@use 'mixins';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -14,8 +14,8 @@ html {
 
 body {
   font-family: 'Inter', 'Roboto', sans-serif;
-  background-color: $background-dark;
-  color: $text-primary;
+  background-color: vars.$background-dark;
+  color: vars.$text-primary;
   overflow-x: hidden;
   line-height: 1.6;
   min-height: 100vh;
@@ -53,7 +53,7 @@ button {
   margin: 0 auto;
   padding: 0 2rem;
   
-  @include responsive(tablet) {
+  @include mixins.responsive(tablet) {
     padding: 0 1.5rem;
   }
 }
@@ -85,7 +85,7 @@ button {
 
 // Gradient button
 .gradient-btn {
-  background: $primary-gradient;
+  background: vars.$primary-gradient;
   border: none;
   border-radius: 50px;
   color: white;

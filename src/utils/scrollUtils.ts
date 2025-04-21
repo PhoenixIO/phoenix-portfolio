@@ -145,23 +145,3 @@ export const scrollEffects = {
     );
   }
 };
-
-// Функція для створення горизонтального скролінгу
-export const createHorizontalScroll = (
-  containerSelector: string, 
-  contentSelector: string
-) => {
-  const sections = gsap.utils.toArray(contentSelector);
-  
-  gsap.to(sections, {
-    xPercent: -100 * (sections.length - 1),
-    ease: 'none',
-    scrollTrigger: {
-      trigger: containerSelector,
-      pin: true,
-      scrub: 1,
-      snap: 1 / (sections.length - 1),
-      end: () => `+=${document.querySelector(containerSelector)?.offsetWidth || 0}`
-    }
-  });
-};

@@ -1,14 +1,17 @@
+@use '../styles/variables' as vars;
+@use '../styles/mixins';
+
 .contact-form-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
-  @include glass-effect;
+  @include mixins.glass-effect;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  transition: $transition-default;
+  transition: vars.$transition-default;
   
   &:hover {
-    box-shadow: $shadow-hover;
+    box-shadow: vars.$shadow-hover;
     border-color: rgba(255, 255, 255, 0.2);
   }
   
@@ -16,7 +19,7 @@
     font-size: 2rem;
     margin-bottom: 1.5rem;
     text-align: center;
-    @include gradient-text;
+    @include mixins.gradient-text;
   }
   
   .success-message {
@@ -34,7 +37,7 @@
       height: 24px;
       background: rgba(0, 200, 100, 0.8);
       border-radius: 50%;
-      @include flex-center;
+      @include mixins.flex-center;
       font-size: 14px;
       font-weight: bold;
       color: white;
@@ -59,7 +62,7 @@
       label {
         font-weight: 500;
         font-size: 0.9rem;
-        color: $text-secondary;
+        color: vars.$text-secondary;
       }
       
       input, textarea {
@@ -68,11 +71,11 @@
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
-        color: $text-primary;
+        color: vars.$text-primary;
         font-family: inherit;
         font-size: 1rem;
         resize: vertical;
-        transition: $transition-default;
+        transition: vars.$transition-default;
         
         &:focus {
           outline: none;
@@ -99,15 +102,15 @@
     
     .submit-button {
       padding: 1rem;
-      background: $primary-gradient;
+      background: vars.$primary-gradient;
       border: none;
       border-radius: 50px;
       color: white;
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
-      transition: $transition-default;
-      @include flex-center;
+      transition: vars.$transition-default;
+      @include mixins.flex-center;
       
       &:hover:not(:disabled) {
         transform: translateY(-5px);

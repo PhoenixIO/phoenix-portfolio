@@ -1,3 +1,5 @@
+@use 'variables' as vars;
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
@@ -11,7 +13,7 @@
 }
 
 @mixin gradient-text {
-  background: $primary-gradient;
+  background: vars.$primary-gradient;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -19,19 +21,19 @@
 
 @mixin responsive($breakpoint) {
   @if $breakpoint == mobile {
-    @media (max-width: $mobile) {
+    @media (max-width: vars.$mobile) {
       @content;
     }
   } @else if $breakpoint == tablet {
-    @media (max-width: $tablet) {
+    @media (max-width: vars.$tablet) {
       @content;
     }
   } @else if $breakpoint == desktop {
-    @media (max-width: $desktop) {
+    @media (max-width: vars.$desktop) {
       @content;
     }
   } @else if $breakpoint == large-desktop {
-    @media (max-width: $large-desktop) {
+    @media (max-width: vars.$large-desktop) {
       @content;
     }
   }

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { gsap } from 'gsap';
 import './SpaceBackground.scss';
 
 interface SpaceBackgroundProps {

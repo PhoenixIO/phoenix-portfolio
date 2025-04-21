@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { skills } from '../data/skills';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { scrollEffects } from '../utils/scrollUtils';
 import '../styles/pages/RoadmapPage.scss';
 
@@ -26,28 +25,23 @@ const RoadmapPage: React.FC = () => {
     scrollEffects.parallax('.parallax-bg', '.roadmap-page', 0.3);
     
     // Анімуємо з'єднувальну лінію (timeline)
-    gsap.fromTo(
-      '.timeline',
-      { height: 0 },
-      { 
-        height: '100%', 
-        duration: 2,
-        ease: 'power2.inOut',
-        scrollTrigger: {
-          trigger: '.roadmap-container',
-          start: 'top 50%',
-          end: 'bottom 50%',
-          scrub: 1
-        }
+    gsap.to('.timeline', {
+      scaleY: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.roadmap-container',
+        start: 'top top',      // починаємо коли верх контейнера торкнеться верху в’юпорту
+        end: 'bottom bottom',  // закінчуємо коли низ контейнера опиниться внизу в’юпорту
+        scrub: 0.5,
       }
-    );
+    });
     
     // Додаємо анімації для категорій
     document.querySelectorAll('.category-section').forEach((section, index) => {
       scrollEffects.reveal(
         section as HTMLElement, 
         section as HTMLElement, 
-        index % 2 === 0 ? 'left' : 'right'
+        index % 2 === 0 ? 'right' : 'left'
       );
     });
     
@@ -80,6 +74,24 @@ const RoadmapPage: React.FC = () => {
           once: true
         });
       }
+    });
+
+    document.querySelectorAll<HTMLElement>('.connector').forEach(conn => {
+      const isLeft = conn.parentElement?.classList.contains('left');
+      gsap.fromTo(conn, 
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          transformOrigin: isLeft ? 'right center' : 'left center',
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: conn,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
     });
     
     // Очищуємо ScrollTrigger при розмонтуванні компонента

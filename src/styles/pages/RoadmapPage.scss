@@ -69,44 +69,37 @@
       left: 50%;
       width: 4px;
       background: vars.$primary-gradient;
-      transform: translateX(-50%);
+      transform: translateX(-50%) scaleY(0);      // початково сховали по осі Y
+      transform-origin: top center;               // точка “кріплення” зростання
       z-index: 1;
-      
+
       @include mixins.responsive(tablet) {
         left: 30px;
       }
     }
     
     .category-section {
+      position: relative;
       margin-bottom: 6rem;
-      
+
       .category-title {
-        text-align: center;
+        @include mixins.gradient-text;
         margin-bottom: 3rem;
         font-size: 2.2rem;
-        @include mixins.gradient-text;
-        position: relative;
-        display: inline-block;
-        left: 50%;
-        transform: translateX(-50%);
-        
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background: vars.$primary-gradient;
-        }
-        
-        @include mixins.responsive(tablet) {
-          text-align: left;
-          margin-left: 60px;
-          font-size: 1.8rem;
-          left: 0;
-          transform: none;
-        }
+        text-align: left;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+      }
+
+      &:nth-of-type(2n+1) .category-title {
+        text-align: left;
+        margin-left: 0;
+      }
+
+      &:nth-of-type(2n) .category-title {
+        text-align: right;
+        margin-right: 0;
       }
     }
     
@@ -125,9 +118,10 @@
           position: absolute;
           top: 2rem;
           right: 0;
-          width: 2rem;
+          width: calc(50%);
           height: 4px;
           background: vars.$primary-gradient;
+          transform-origin: right center;
         }
         
         @include mixins.responsive(tablet) {
@@ -135,8 +129,6 @@
           padding-left: 60px;
           
           .connector {
-            right: auto;
-            left: 30px;
             width: 30px;
           }
         }
@@ -149,16 +141,14 @@
           position: absolute;
           top: 2rem;
           left: 0;
-          width: 2rem;
+          width: calc(50%);
           height: 4px;
           background: vars.$primary-gradient;
+          transform-origin: left center;
         }
         
         @include mixins.responsive(tablet) {
-          padding-left: 60px;
-          
           .connector {
-            left: 30px;
             width: 30px;
           }
         }

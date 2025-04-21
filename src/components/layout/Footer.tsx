@@ -26,9 +26,9 @@ const Footer: React.FC = () => {
             <div className="links-group">
               <h3>Контакти</h3>
               <ul>
-                <li><a href="mailto:your.email@example.com">your.email@example.com</a></li>
-                <li><a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                <li><a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="mailto:konstantin.matviychuck.work@gmail.com">konstantin.matviychuck.work@gmail.com</a></li>
+                <li><a href="https://github.com/PhoenixIO" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/kostiantyn-matviychuck/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
               </ul>
             </div>
           </div>

@@ -1,3 +1,6 @@
+@use '../variables' as vars;
+@use '../mixins';
+
 .contact-page {
   min-height: 100vh;
   padding: 6rem 0;
@@ -10,13 +13,13 @@
     h1 {
       font-size: 3rem;
       margin-bottom: 1rem;
-      @include gradient-text;
+      @include mixins.gradient-text;
       
-      @include responsive(tablet) {
+      @include mixins.responsive(tablet) {
         font-size: 2.5rem;
       }
       
-      @include responsive(mobile) {
+      @include mixins.responsive(mobile) {
         font-size: 2rem;
       }
     }
@@ -25,9 +28,9 @@
       font-size: 1.2rem;
       max-width: 600px;
       margin: 0 auto;
-      color: $text-secondary;
+      color: vars.$text-secondary;
       
-      @include responsive(mobile) {
+      @include mixins.responsive(mobile) {
         font-size: 1rem;
       }
     }
@@ -41,7 +44,7 @@
     margin: 0 auto;
     padding: 0 2rem;
     
-    @include responsive(tablet) {
+    @include mixins.responsive(tablet) {
       grid-template-columns: 1fr;
     }
     
@@ -56,28 +59,28 @@
         align-items: center;
         gap: 1.5rem;
         padding: 1.5rem;
-        @include glass-effect;
+        @include mixins.glass-effect;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 15px;
-        transition: $transition-default;
+        transition: vars.$transition-default;
         
         &:hover {
           transform: translateY(-5px);
-          box-shadow: $shadow-hover;
+          box-shadow: vars.$shadow-hover;
           border-color: rgba(255, 255, 255, 0.2);
         }
         
         .info-icon {
           width: 50px;
           height: 50px;
-          @include flex-center;
+          @include mixins.flex-center;
           background: rgba(255, 255, 255, 0.1);
           border-radius: 50%;
           
           svg {
             width: 24px;
             height: 24px;
-            color: $text-primary;
+            color: vars.$text-primary;
           }
         }
         
@@ -88,7 +91,7 @@
           }
           
           p {
-            color: $text-secondary;
+            color: vars.$text-secondary;
           }
         }
       }

@@ -1,3 +1,6 @@
+@use '../../styles/variables' as vars;
+@use '../../styles/mixins';
+
 .site-header {
   position: fixed;
   top: 0;
@@ -32,12 +35,12 @@
     z-index: 101;
     
     .logo-text {
-      @include gradient-text;
+      @include mixins.gradient-text;
     }
   }
   
   .desktop-nav {
-    @include responsive(tablet) {
+    @include mixins.responsive(tablet) {
       display: none;
     }
     
@@ -56,7 +59,7 @@
           left: 0;
           width: 0;
           height: 2px;
-          background: $primary-gradient;
+          background: vars.$primary-gradient;
           transition: width 0.3s ease;
         }
         
@@ -70,12 +73,12 @@
           transition: color 0.3s ease;
           
           &:hover {
-            @include gradient-text;
+            @include mixins.gradient-text;
           }
         }
         
         &.active a {
-          @include gradient-text;
+          @include mixins.gradient-text;
         }
       }
     }
@@ -97,7 +100,7 @@
     cursor: pointer;
     z-index: 101;
     
-    @include responsive(tablet) {
+    @include mixins.responsive(tablet) {
       display: block;
     }
     
@@ -165,12 +168,12 @@
           transition: color 0.3s ease;
           
           &:hover {
-            @include gradient-text;
+            @include mixins.gradient-text;
           }
         }
         
         &.active a {
-          @include gradient-text;
+          @include mixins.gradient-text;
         }
       }
     }

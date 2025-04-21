@@ -1,8 +1,11 @@
+@use '../variables' as vars;
+@use '../mixins';
+
 .roadmap-page {
   position: relative;
   min-height: 100vh;
-  background-color: $background-dark;
-  color: $text-primary;
+  background-color: vars.$background-dark;
+  color: vars.$text-primary;
   overflow-x: hidden;
   padding: 6rem 0;
   
@@ -15,13 +18,13 @@
     background: radial-gradient(circle at center, rgba(0, 219, 222, 0.15) 0%, rgba(252, 0, 255, 0.15) 100%);
     mix-blend-mode: screen;
     opacity: 0.6;
-    z-index: $z-background;
+    z-index: vars.$z-background;
     pointer-events: none;
   }
   
   .roadmap-header {
     position: relative;
-    z-index: $z-content;
+    z-index: vars.$z-content;
     text-align: center;
     margin-bottom: 6rem;
     padding: 0 2rem;
@@ -29,13 +32,13 @@
     h1 {
       font-size: 3rem;
       margin-bottom: 1rem;
-      @include gradient-text;
+      @include mixins.gradient-text;
       
-      @include responsive(tablet) {
+      @include mixins.responsive(tablet) {
         font-size: 2.5rem;
       }
       
-      @include responsive(mobile) {
+      @include mixins.responsive(mobile) {
         font-size: 2rem;
       }
     }
@@ -44,9 +47,9 @@
       font-size: 1.2rem;
       max-width: 600px;
       margin: 0 auto;
-      color: $text-secondary;
+      color: vars.$text-secondary;
       
-      @include responsive(mobile) {
+      @include mixins.responsive(mobile) {
         font-size: 1rem;
       }
     }
@@ -54,7 +57,7 @@
   
   .roadmap-container {
     position: relative;
-    z-index: $z-content;
+    z-index: vars.$z-content;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -65,11 +68,11 @@
       bottom: 0;
       left: 50%;
       width: 4px;
-      background: $primary-gradient;
+      background: vars.$primary-gradient;
       transform: translateX(-50%);
       z-index: 1;
       
-      @include responsive(tablet) {
+      @include mixins.responsive(tablet) {
         left: 30px;
       }
     }
@@ -81,7 +84,7 @@
         text-align: center;
         margin-bottom: 3rem;
         font-size: 2.2rem;
-        @include gradient-text;
+        @include mixins.gradient-text;
         position: relative;
         display: inline-block;
         left: 50%;
@@ -94,10 +97,10 @@
           left: 0;
           width: 100%;
           height: 2px;
-          background: $primary-gradient;
+          background: vars.$primary-gradient;
         }
         
-        @include responsive(tablet) {
+        @include mixins.responsive(tablet) {
           text-align: left;
           margin-left: 60px;
           font-size: 1.8rem;
@@ -124,10 +127,10 @@
           right: 0;
           width: 2rem;
           height: 4px;
-          background: $primary-gradient;
+          background: vars.$primary-gradient;
         }
         
-        @include responsive(tablet) {
+        @include mixins.responsive(tablet) {
           padding-right: 0;
           padding-left: 60px;
           
@@ -148,10 +151,10 @@
           left: 0;
           width: 2rem;
           height: 4px;
-          background: $primary-gradient;
+          background: vars.$primary-gradient;
         }
         
-        @include responsive(tablet) {
+        @include mixins.responsive(tablet) {
           padding-left: 60px;
           
           .connector {
@@ -162,15 +165,15 @@
       }
       
       .skill-content {
-        @include glass-effect;
+        @include mixins.glass-effect;
         padding: 1.5rem;
-        box-shadow: $shadow-regular;
-        transition: $transition-default;
+        box-shadow: vars.$shadow-regular;
+        transition: vars.$transition-default;
         border: 1px solid rgba(255, 255, 255, 0.1);
         
         &:hover {
           transform: translateY(-5px);
-          box-shadow: $shadow-hover;
+          box-shadow: vars.$shadow-hover;
           border-color: rgba(255, 255, 255, 0.2);
         }
       }
@@ -182,8 +185,8 @@
           width: 50px;
           height: 50px;
           border-radius: 50%;
-          background: $primary-gradient;
-          @include flex-center;
+          background: vars.$primary-gradient;
+          @include mixins.flex-center;
           font-size: 1.5rem;
           font-weight: bold;
           color: white;
@@ -197,7 +200,7 @@
       
       .skill-description {
         margin-bottom: 1.5rem;
-        color: $text-secondary;
+        color: vars.$text-secondary;
         line-height: 1.6;
       }
       
@@ -213,7 +216,7 @@
           
           .progress-bar-fill {
             height: 100%;
-            background: $primary-gradient;
+            background: vars.$primary-gradient;
             width: 0; // Початкове значення для анімації
           }
         }
@@ -223,7 +226,7 @@
           top: -25px;
           right: 0;
           font-weight: bold;
-          @include gradient-text;
+          @include mixins.gradient-text;
         }
       }
     }
@@ -235,13 +238,13 @@
     gap: 2rem;
     margin-top: 5rem;
     position: relative;
-    z-index: $z-content;
+    z-index: vars.$z-content;
     
     .nav-btn {
       padding: 0.8rem 2rem;
       border-radius: 50px;
       font-weight: 600;
-      transition: $transition-default;
+      transition: vars.$transition-default;
       
       &:hover {
         transform: translateY(-5px);
@@ -251,12 +254,12 @@
     
     .prev-btn {
       background: rgba(255, 255, 255, 0.1);
-      color: $text-primary;
+      color: vars.$text-primary;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .next-btn {
-      background: $primary-gradient;
+      background: vars.$primary-gradient;
       color: white;
     }
   }

@@ -1,0 +1,24 @@
+// Кольори (змінні CSS для підтримки тем)
+$primary-gradient: linear-gradient(to right, #00dbde, #fc00ff);
+$background-dark: var(--background-dark, #0b0b0f);
+$text-primary: var(--text-primary, #ffffff);
+$text-secondary: var(--text-secondary, rgba(255, 255, 255, 0.7));
+$card-bg: var(--card-bg, rgba(255, 255, 255, 0.1));
+
+// Розміри екранів
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+$large-desktop: 1440px;
+
+// Z-індекси
+$z-background: 1;
+$z-content: 2;
+$z-overlay: 10;
+
+// Тіні
+$shadow-regular: var(--shadow-regular, 0 15px 25px rgba(0, 0, 0, 0.2));
+$shadow-hover: var(--shadow-hover, 0 20px 30px rgba(0, 0, 0, 0.3));
+
+// Переходи
+$transition-default: all 0.3s ease;

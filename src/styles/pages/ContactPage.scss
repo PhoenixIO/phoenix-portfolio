@@ -1,0 +1,101 @@
+.contact-page {
+  min-height: 100vh;
+  padding: 6rem 0;
+  
+  .contact-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 0 2rem;
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      @include gradient-text;
+      
+      @include responsive(tablet) {
+        font-size: 2.5rem;
+      }
+      
+      @include responsive(mobile) {
+        font-size: 2rem;
+      }
+    }
+    
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: $text-secondary;
+      
+      @include responsive(mobile) {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    
+    @include responsive(tablet) {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-section {
+      // Стилі вже визначені в ComponentForm.scss
+    }
+    
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2rem;
+      
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        @include glass-effect;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        transition: $transition-default;
+        
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: $shadow-hover;
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-icon {
+          width: 50px;
+          height: 50px;
+          @include flex-center;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          
+          svg {
+            width: 24px;
+            height: 24px;
+            color: $text-primary;
+          }
+        }
+        
+        .info-text {
+          h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+          }
+          
+          p {
+            color: $text-secondary;
+          }
+        }
+      }
+    }
+  }
+}

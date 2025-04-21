@@ -1,35 +1,96 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import RoadmapPage from './pages/RoadmapPage';
+import ProjectsPage from './pages/ProjectsPage';
+import ContactPage from './pages/ContactPage';
+import Layout from './components/layout/Layout';
+import { ThemeProvider } from './context/ThemeContext';
+import { gsap } from 'gsap';
+import './styles/preloader.scss';
+
+// Компонент прелоадера для початкового завантаження
+const Preloader: React.FC = () => {
+  return (
+    <div className="preloader">
+      <div className="loader"></div>
+      <div className="loader-text">Готуємо космічну подорож...</div>
+    </div>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Імітація завантаження ресурсів
+  useEffect(() => {
+    // Імітуємо завантаження важких ресурсів (3D моделі, текстури, тощо)
+    const timer = setTimeout(() => {
+      const preloader = document.querySelector('.preloader');
+      
+      if (preloader) {
+        // Анімуємо зникнення прелоадера
+        gsap.to(preloader, {
+          opacity: 0,
+          duration: 0.5,
+          onComplete: () => {
+            setIsLoading(false);
+          }
+        });
+      }
+    }, 2000); // 2 секунди для демонстрації
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Компонент з анімацією переходу між сторінками
+  const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    useEffect(() => {
+      // Анімація при завантаженні сторінки
+      gsap.fromTo(
+        '.page-content',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+      );
+    }, []);
+    
+    return <div className="page-content">{children}</div>;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeProvider>
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={
+                <PageTransition>
+                  <HomePage />
+                </PageTransition>
+              } />
+              <Route path="/roadmap" element={
+                <PageTransition>
+                  <RoadmapPage />
+                </PageTransition>
+              } />
+              <Route path="/projects" element={
+                <PageTransition>
+                  <ProjectsPage />
+                </PageTransition>
+              } />
+              <Route path="/contact" element={
+                <PageTransition>
+                  <ContactPage />
+                </PageTransition>
+              } />
+            </Routes>
+          </Layout>
+        </Router>
+      )}
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

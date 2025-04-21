@@ -1,0 +1,263 @@
+.roadmap-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: $background-dark;
+  color: $text-primary;
+  overflow-x: hidden;
+  padding: 6rem 0;
+  
+  .parallax-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0, 219, 222, 0.15) 0%, rgba(252, 0, 255, 0.15) 100%);
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    z-index: $z-background;
+    pointer-events: none;
+  }
+  
+  .roadmap-header {
+    position: relative;
+    z-index: $z-content;
+    text-align: center;
+    margin-bottom: 6rem;
+    padding: 0 2rem;
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      @include gradient-text;
+      
+      @include responsive(tablet) {
+        font-size: 2.5rem;
+      }
+      
+      @include responsive(mobile) {
+        font-size: 2rem;
+      }
+    }
+    
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: $text-secondary;
+      
+      @include responsive(mobile) {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .roadmap-container {
+    position: relative;
+    z-index: $z-content;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    
+    .timeline {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: $primary-gradient;
+      transform: translateX(-50%);
+      z-index: 1;
+      
+      @include responsive(tablet) {
+        left: 30px;
+      }
+    }
+    
+    .category-section {
+      margin-bottom: 6rem;
+      
+      .category-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2.2rem;
+        @include gradient-text;
+        position: relative;
+        display: inline-block;
+        left: 50%;
+        transform: translateX(-50%);
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: $primary-gradient;
+        }
+        
+        @include responsive(tablet) {
+          text-align: left;
+          margin-left: 60px;
+          font-size: 1.8rem;
+          left: 0;
+          transform: none;
+        }
+      }
+    }
+    
+    .skills-wrapper {
+      position: relative;
+    }
+    
+    .skill-item {
+      position: relative;
+      margin-bottom: 4rem;
+      
+      &.left {
+        padding-right: calc(50% + 2rem);
+        
+        .connector {
+          position: absolute;
+          top: 2rem;
+          right: 0;
+          width: 2rem;
+          height: 4px;
+          background: $primary-gradient;
+        }
+        
+        @include responsive(tablet) {
+          padding-right: 0;
+          padding-left: 60px;
+          
+          .connector {
+            right: auto;
+            left: 30px;
+            width: 30px;
+          }
+        }
+      }
+      
+      &.right {
+        padding-left: calc(50% + 2rem);
+        
+        .connector {
+          position: absolute;
+          top: 2rem;
+          left: 0;
+          width: 2rem;
+          height: 4px;
+          background: $primary-gradient;
+        }
+        
+        @include responsive(tablet) {
+          padding-left: 60px;
+          
+          .connector {
+            left: 30px;
+            width: 30px;
+          }
+        }
+      }
+      
+      .skill-content {
+        @include glass-effect;
+        padding: 1.5rem;
+        box-shadow: $shadow-regular;
+        transition: $transition-default;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: $shadow-hover;
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+      
+      .skill-icon {
+        margin-bottom: 1rem;
+        
+        .icon-placeholder {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: $primary-gradient;
+          @include flex-center;
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: white;
+        }
+      }
+      
+      .skill-name {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .skill-description {
+        margin-bottom: 1.5rem;
+        color: $text-secondary;
+        line-height: 1.6;
+      }
+      
+      .skill-progress {
+        position: relative;
+        margin-top: 1rem;
+        
+        .progress-bar {
+          height: 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+          overflow: hidden;
+          
+          .progress-bar-fill {
+            height: 100%;
+            background: $primary-gradient;
+            width: 0; // Початкове значення для анімації
+          }
+        }
+        
+        .skill-level {
+          position: absolute;
+          top: -25px;
+          right: 0;
+          font-weight: bold;
+          @include gradient-text;
+        }
+      }
+    }
+  }
+  
+  .navigation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 5rem;
+    position: relative;
+    z-index: $z-content;
+    
+    .nav-btn {
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: $transition-default;
+      
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    .prev-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: $text-primary;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .next-btn {
+      background: $primary-gradient;
+      color: white;
+    }
+  }
+}

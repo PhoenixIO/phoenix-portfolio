@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SpaceBackground from '../components/home/SpaceBackground';
@@ -6,14 +6,18 @@ import '../styles/pages/HomePage.scss';
 
 // Skill icon component with floating animation
 const SkillIcons = () => {
-  // Skills to display
   const skills = [
     { name: 'React', color: '#61DAFB' },
     { name: 'TypeScript', color: '#3178C6' },
     { name: 'Node.js', color: '#339933' },
     { name: 'SASS', color: '#CC6699' },
+    { name: 'ThreeJS', color: '#000000' },
     { name: 'C++', color: '#00599C' },
-    { name: 'Python', color: '#3776AB' }
+    { name: 'Python', color: '#3776AB' },
+    { name: 'Phaser', color: '#5DCDE2' },
+    { name: 'NestJS', color: '#E0234E' },
+    { name: 'RestAPI', color: '#FF6C37' },
+    { name: 'WebSockets', color: '#4353FF' }
   ];
 
   return (
@@ -28,9 +32,9 @@ const SkillIcons = () => {
             opacity: 0.7
           }}
           animate={{
-            x: Math.sin((index + 1) * 0.5) * 30,
-            y: Math.cos((index + 1) * 0.8) * 30,
-            opacity: 0.7,
+            x: Math.sin((index + 1) * 0.5) * 40,
+            y: Math.cos((index + 1) * 0.8) * 40,
+            opacity: 0.8,
             rotateZ: Math.sin((index + 2) * 0.3) * 5
           }}
           transition={{
@@ -57,14 +61,13 @@ const SkillIcons = () => {
   );
 };
 
-// Social links component
 const SocialLinks = () => {
   return (
     <motion.div 
       className="social-links"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.7 }}
+      transition={{ duration: 0.8, delay: 0.5 }}
     >
       <a 
         href="https://github.com/yourusername" 
@@ -93,7 +96,6 @@ const SocialLinks = () => {
   );
 };
 
-// Experience stats component
 const ExperienceStats = () => {
   return (
     <motion.div 
@@ -128,57 +130,58 @@ const HomePage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0 }}
       >
-        <div className="two-column-layout">
-          <div className="left-column">
-            <motion.h1 
-              className="home-title"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              Matviichuk Kostiantyn
-            </motion.h1>
-            
-            <motion.p 
-              className="home-subtitle"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              Software Engineer
-            </motion.p>
-            
-            <motion.p 
-              className="home-description"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              Passionate about creating intuitive and engaging user experiences. 
-              Specialize in transforming ideas into beautifully crafted products.
-            </motion.p>
-            
-            <motion.div 
-              className="cta-buttons"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
+        <div className="hero-section">
+          <motion.h1 
+            className="home-title"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Matviichuk Kostiantyn
+          </motion.h1>
+          
+          <motion.p 
+            className="home-subtitle"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            Software Engineer
+          </motion.p>
+          
+          <motion.p 
+            className="home-description"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            Passionate about creating intuitive and engaging user experiences. 
+            Specialize in transforming ideas into beautifully crafted products.
+          </motion.p>
+          
+          <ExperienceStats />
+          
+          <motion.div 
+            className="action-container"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <div className="cta-buttons">
               <Link to="/projects" className="start-journey-btn">
                 View Projects
               </Link>
               <Link to="/contact" className="contact-btn">
                 Contact Me
               </Link>
-            </motion.div>
+            </div>
             
             <SocialLinks />
-          </div>
-          
-          <div className="right-column">
-            <ExperienceStats />
-            <SkillIcons />
-          </div>
+          </motion.div>
+        </div>
+        
+        <div className="skills-section">
+          <SkillIcons />
         </div>
       </motion.div>
     </div>

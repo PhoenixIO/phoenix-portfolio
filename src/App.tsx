@@ -98,20 +98,6 @@ function App() {
     }
   };
 
-  // Page transition animation component
-  const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    useEffect(() => {
-      // Animation when loading the page
-      gsap.fromTo(
-        '.page-content',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
-      );
-    }, []);
-    
-    return <div className="page-content">{children}</div>;
-  };
-
   return (
     <ThemeProvider>
       {isLoading ? (
@@ -121,24 +107,16 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={
-                <PageTransition>
-                  <HomePage />
-                </PageTransition>
+                <HomePage />
               } />
               <Route path="/roadmap" element={
-                <PageTransition>
-                  <RoadmapPage />
-                </PageTransition>
+                <RoadmapPage />
               } />
               <Route path="/projects" element={
-                <PageTransition>
-                  <ProjectsPage />
-                </PageTransition>
+                <ProjectsPage />
               } />
               <Route path="/contact" element={
-                <PageTransition>
-                  <ContactPage />
-                </PageTransition>
+                <ContactPage />
               } />
             </Routes>
           </Layout>

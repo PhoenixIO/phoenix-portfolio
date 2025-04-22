@@ -9,39 +9,100 @@ import { ThemeProvider } from './context/ThemeContext';
 import { gsap } from 'gsap';
 import './styles/preloader.scss';
 
-// Компонент прелоадера для початкового завантаження
 const Preloader: React.FC = () => {
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
+  
+  useEffect(() => {
+    const messages = [
+      "Preparing cosmic journey...",
+      "Calculating the meaning of life...",
+      "Brewing cosmic coffee...",
+      "Convincing electrons to move faster...",
+      "Teaching hamsters to power our servers...",
+      "Generating random excuses for the delay...",
+      "Searching for the internet's sense of humor...",
+      "Untangling quantum knots...",
+      "Aligning digital chakras...",
+      "Reticulating splines...",
+      "Warming up the flux capacitor...",
+      "Debugging unicorn code...",
+      "Adjusting the space-time continuum...",
+      "Feeding the pixel gremlins...",
+      "Loading cosmic particles..."
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    setLoadingMessage(randomMessage);
+  }, []);
+  
   return (
     <div className="preloader">
       <div className="loader"></div>
-      <div className="loader-text">Готуємо космічну подорож...</div>
+      <div className="loader-text">{loadingMessage}</div>
     </div>
   );
 };
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Імітація завантаження ресурсів
+  const [contentReady, setContentReady] = useState(false);
+
   useEffect(() => {
-    // Імітуємо завантаження важких ресурсів (3D моделі, текстури, тощо)
-    const timer = setTimeout(() => {
-      const preloader = document.querySelector('.preloader');
-      
-      if (preloader) {
-        // Анімуємо зникнення прелоадера
-        gsap.to(preloader, {
+    // Immediately start loading content
+    document.body.style.overflow = 'hidden';
+
+    const prepareContent = async () => {
+      try {
+        // In a real app, we might preload images, fonts, or other assets here
+        // For this demo, we'll just wait a bit
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setContentReady(true);
+      } catch (error) {
+        console.error("Error preparing content:", error);
+        setContentReady(true); // Show content even if there's an error
+      }
+    };
+
+    prepareContent();
+    
+    // Minimum display time for preloader (for UX purposes)
+    const minimumLoadingTime = setTimeout(() => {
+      if (contentReady) hidePreloader();
+    }, 1500);
+    
+    return () => {
+      clearTimeout(minimumLoadingTime);
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  useEffect(() => {
+    if (contentReady) hidePreloader();
+  }, [contentReady]);
+  
+  // Smooth transition from preloader to content
+  const hidePreloader = () => {
+    const preloader = document.querySelector('.preloader');
+    
+    if (preloader) {
+      // Create a sequence of animations for smooth transition
+      gsap.timeline()
+        .to('.loader', {
+          scale: 1.2,
+          duration: 0.3,
+          ease: 'power2.in'
+        })
+        .to('.preloader', {
           opacity: 0,
-          duration: 0.5,
+          duration: 0.8,
+          ease: 'power2.inOut',
           onComplete: () => {
             setIsLoading(false);
+            document.body.style.overflow = '';
           }
         });
-      }
-    }, 1000); // 2 секунди для демонстрації
-    
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  };
 
   // Компонент з анімацією переходу між сторінками
   const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {

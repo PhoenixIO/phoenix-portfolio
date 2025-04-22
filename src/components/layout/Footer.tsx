@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FaGithub, FaLinkedin, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { contacts } from '@/data/contacts';
 import './Footer.scss';
 
@@ -8,30 +9,45 @@ const Footer: React.FC = () => {
   return (
     <footer className="site-footer">
       <div className="footer-container">
-        <div className="footer-top">
-          <div className="footer-logo">
-            <span className="logo-text">{contacts.fullname}</span>
-            <p className="tagline">Fullstack Web Developer & Software Engineer</p>
+        <div className="footer-content">
+          <div className="footer-info">
+            <h2 className="footer-name">{contacts.fullname}</h2>
+            <p className="footer-role">Fullstack Web Developer & Software Engineer</p>
+            <p className="footer-description">
+              Creating clean, user-friendly solutions with modern web technologies.
+            </p>
           </div>
           
-          <div className="footer-links">
-            <div className="links-group">
-              <h3>Навігація</h3>
+          <div className="footer-nav">
+            <div className="footer-section">
+              <h3>Navigation</h3>
               <ul>
-                <li><Link to="/">Головна</Link></li>
-                <li><Link to="/roadmap">Технології</Link></li>
-                <li><Link to="/projects">Проєкти</Link></li>
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/roadmap">Technologies</Link></li>
+                <li><Link to="/projects">Projects</Link></li>
               </ul>
             </div>
             
-            <div className="links-group">
-              <h3>Контакти</h3>
-              <ul>
-                <li><a href={`mailto:${contacts.email}`}>{contacts.email}</a></li>
-                <li><a href={contacts.github} target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                <li><a href={contacts.telegram} target="_blank" rel="noopener noreferrer">Telegram</a></li>
-                <li><a href={contacts.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-              </ul>
+            <div className="footer-section">
+              <h3>Contact</h3>
+              <div className="social-links">
+                <a href={`mailto:${contacts.email}`} aria-label="Email">
+                  <FaEnvelope />
+                  <span>{contacts.email}</span>
+                </a>
+                <a href={contacts.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                  <FaGithub />
+                  <span>{contacts.github.split('/').pop()}</span>
+                </a>
+                <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                  <FaTelegram />
+                  <span>{contacts.telegram.split('/').pop()}</span>
+                </a>
+                <a href={contacts.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                  <FaLinkedin />
+                  <span>{contacts.linkedin.split('/in/')[1]?.replace('/', '')}</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

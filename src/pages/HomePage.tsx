@@ -105,11 +105,11 @@ const ExperienceStats = () => {
       transition={{ duration: 0.8, delay: 0.6 }}
     >
       <div className="stat-item">
-        <span className="stat-number">+12</span>
+        <span className="stat-number">+4</span>
         <span className="stat-label">Years of Experience</span>
       </div>
       <div className="stat-item">
-        <span className="stat-number">+46</span>
+        <span className="stat-number">+17</span>
         <span className="stat-label">Projects Completed</span>
       </div>
     </motion.div>

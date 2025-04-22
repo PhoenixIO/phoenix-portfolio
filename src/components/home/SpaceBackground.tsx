@@ -8,6 +8,7 @@ import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 
 const SpaceBackground: React.FC = () => {
   // Refs
+  const mousePositionRef = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -24,7 +25,6 @@ const SpaceBackground: React.FC = () => {
   
   // State
   const [loaded, setLoaded] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Textures and utilities
   const generateStarTexture = useCallback(() => {
@@ -302,7 +302,7 @@ const SpaceBackground: React.FC = () => {
   const createCosmicDust = useCallback(() => {
     if (!sceneRef.current) return;
     
-    const count = 3000; // Increased from 2000 to 3000 for more particles
+    const count = 1000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
@@ -312,7 +312,7 @@ const SpaceBackground: React.FC = () => {
       const i3 = i * 3;
       
       // Random position in a large sphere - more concentrated in visible area
-      const radius = 150 + Math.random() * 300; // Reduced min radius from 300 to bring particles closer
+      const radius = 150 + Math.random() * 100;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       
@@ -321,7 +321,7 @@ const SpaceBackground: React.FC = () => {
       positions[i3 + 2] = radius * Math.cos(phi);
       
       // Very slow random velocity
-      velocities[i3] = (Math.random() - 0.5) * 0.02; // Doubled velocity from 0.01
+      velocities[i3] = (Math.random() - 0.5) * 0.02;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.02;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
       
@@ -488,8 +488,8 @@ const SpaceBackground: React.FC = () => {
     
     // Camera movement
     if (cameraRef.current) {
-      cameraRef.current.position.x += (mousePosition.x * 2 - cameraRef.current.position.x) * 0.01;
-      cameraRef.current.position.y += (-mousePosition.y * 2 - cameraRef.current.position.y) * 0.01;
+      cameraRef.current.position.x += (mousePositionRef.current.x * 2 - cameraRef.current.position.x) * 0.01;
+      cameraRef.current.position.y += (-mousePositionRef.current.y * 2 - cameraRef.current.position.y) * 0.01;
       cameraRef.current.lookAt(0, 0, 0);
     }
     
@@ -534,14 +534,13 @@ const SpaceBackground: React.FC = () => {
     
     composerRef.current.render();
     animationFrameRef.current = requestAnimationFrame(animate);
-  }, [mousePosition]);
-  
-  // Event handlers - simplified
+  }, []);
+
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    setMousePosition({
+    mousePositionRef.current = {
       x: (e.clientX / window.innerWidth - 0.5) * 2,
       y: (e.clientY / window.innerHeight - 0.5) * 2
-    });
+    };
   }, []);
   
   const handleResize = useCallback(() => {

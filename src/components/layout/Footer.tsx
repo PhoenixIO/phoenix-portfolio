@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { contacts } from '@/data/contact';
 import './Footer.scss';
 
 const Footer: React.FC = () => {
@@ -26,16 +27,17 @@ const Footer: React.FC = () => {
             <div className="links-group">
               <h3>Контакти</h3>
               <ul>
-                <li><a href="mailto:konstantin.matviychuck.work@gmail.com">konstantin.matviychuck.work@gmail.com</a></li>
-                <li><a href="https://github.com/PhoenixIO" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/kostiantyn-matviychuck/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href={`mailto:${contacts.email}`}>{contacts.email}</a></li>
+                <li><a href={contacts.github} target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href={contacts.telegram} target="_blank" rel="noopener noreferrer">Telegram</a></li>
+                <li><a href={contacts.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
               </ul>
             </div>
           </div>
         </div>
         
         <div className="footer-bottom">
-          <p>&copy; {currentYear} YourName. Всі права захищені.</p>
+          <p>&copy; {currentYear} {contacts.fullname}. All rights reserved.</p>
         </div>
       </div>
     </footer>

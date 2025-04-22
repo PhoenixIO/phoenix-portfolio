@@ -10,10 +10,10 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { title: 'Головна', path: '/' },
-  { title: 'Технології', path: '/roadmap' },
-  { title: 'Проєкти', path: '/projects' },
-  { title: 'Контакти', path: '/contact' }
+  { title: 'Main', path: '/' },
+  { title: 'Technology', path: '/roadmap' },
+  { title: 'Projects', path: '/projects' },
+  { title: 'Contact', path: '/contact' }
 ];
 
 const Header: React.FC = () => {
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
       gsap.to('.mobile-menu', {
         x: 0,
         duration: 0.3,
-        ease: 'power2.out'
+        ease: 'expo.out'
       });
       
       // Блокуємо скролл сторінки
@@ -51,7 +51,7 @@ const Header: React.FC = () => {
       gsap.to('.mobile-menu', {
         x: '100%',
         duration: 0.3,
-        ease: 'power2.in'
+        ease: 'expo.in'
       });
       
       // Розблоковуємо скролл сторінки
@@ -73,7 +73,7 @@ const Header: React.FC = () => {
     <header className={`site-header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="header-container">
         <Link to="/" className="logo">
-          <span className="logo-text">YourName</span>
+          <span className="logo-text">PhoenixStudio</span>
         </Link>
         
         <nav className="desktop-nav">

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SpaceBackground from '../components/home/SpaceBackground';
-import { contacts } from '@/data/contact';
+import { contacts } from '@/data/contacts';
 import '../styles/pages/HomePage.scss';
 
 // Skill icon component with floating animation

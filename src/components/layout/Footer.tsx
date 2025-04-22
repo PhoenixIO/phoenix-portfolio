@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { contacts } from '@/data/contact';
+import { contacts } from '@/data/contacts';
 import './Footer.scss';
 
 const Footer: React.FC = () => {

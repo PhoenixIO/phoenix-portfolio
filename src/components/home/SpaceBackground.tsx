@@ -369,21 +369,20 @@ const SpaceBackground: React.FC = () => {
     dustRef.current = dust;
   }, [generateDustTexture]);
 
-  // Create constellations - Simplified without hover effect
+  // Create constellations
   const createConstellations = useCallback(() => {
     if (!sceneRef.current) return;
     
-    // Define constellation data
     const constellationData = [
       {
         stars: [
-          { x: 50, y: 30, z: -150 },
-          { x: 65, y: 40, z: -150 },
-          { x: 70, y: 20, z: -150 },
-          { x: 45, y: 15, z: -150 },
-          { x: 40, y: 0, z: -150 },
-          { x: 60, y: 0, z: -150 },
-          { x: 75, y: -15, z: -150 },
+          { x: 100, y: 10, z: -120 },
+          { x: 115, y: 20, z: -120 },
+          { x: 120, y: 0, z: -120 },
+          { x: 95, y: -5, z: -120 },
+          { x: 90, y: -20, z: -120 },
+          { x: 110, y: -20, z: -120 },
+          { x: 125, y: -35, z: -120 },
         ],
         connections: [
           [0, 1], [1, 2], [0, 3], [3, 4], [3, 5], [5, 6]
@@ -391,13 +390,13 @@ const SpaceBackground: React.FC = () => {
       },
       {
         stars: [
-          { x: -50, y: 60, z: -180 },
-          { x: -35, y: 65, z: -180 },
-          { x: -20, y: 70, z: -180 },
-          { x: -10, y: 55, z: -180 },
-          { x: -15, y: 40, z: -180 },
-          { x: -30, y: 35, z: -180 },
-          { x: -45, y: 40, z: -180 },
+          { x: 70, y: -80, z: -150 },
+          { x: 85, y: -75, z: -150 },
+          { x: 100, y: -70, z: -150 },
+          { x: 110, y: -85, z: -150 },
+          { x: 105, y: -100, z: -150 },
+          { x: 90, y: -105, z: -150 },
+          { x: 75, y: -100, z: -150 },
         ],
         connections: [
           [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0]
@@ -405,14 +404,26 @@ const SpaceBackground: React.FC = () => {
       },
       {
         stars: [
-          { x: 0, y: 100, z: -160 },
-          { x: 20, y: 110, z: -160 },
-          { x: 35, y: 100, z: -160 },
-          { x: 45, y: 115, z: -160 },
-          { x: 60, y: 105, z: -160 },
+          { x: 20, y: 40, z: -140 },
+          { x: 40, y: 50, z: -140 },
+          { x: 55, y: 40, z: -140 },
+          { x: 65, y: 55, z: -140 },
+          { x: 80, y: 45, z: -140 },
         ],
         connections: [
           [0, 1], [1, 2], [2, 3], [3, 4]
+        ]
+      },
+      {
+        stars: [
+          { x: -90, y: -70, z: -160 },
+          { x: -75, y: -60, z: -160 },
+          { x: -55, y: -65, z: -160 },
+          { x: -60, y: -85, z: -160 },
+          { x: -80, y: -90, z: -160 },
+        ],
+        connections: [
+          [0, 1], [1, 2], [2, 3], [3, 4], [4, 0]
         ]
       }
     ];

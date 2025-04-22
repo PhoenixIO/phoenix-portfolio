@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import StarBackground from '../common/StarBackground';
@@ -8,6 +9,9 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  
   return (
     <div className="site-layout">
       <StarBackground />
@@ -15,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="site-main">
         {children}
       </main>
-      <Footer />
+      {!isHomePage && <Footer />}
     </div>
   );
 };

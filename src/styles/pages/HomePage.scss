@@ -31,7 +31,7 @@
       width: 100%;
       margin-bottom: 2rem;
       
-      @include mixins.responsive(tablet) {
+      @include mixins.responsive(desktop) {
         align-items: center;
         text-align: center;
         margin-bottom: 3rem;
@@ -41,9 +41,10 @@
     .skills-section {
       width: 100%;
       margin-top: 2rem;
+      display: none; // Hide by default
       
-      @include mixins.responsive(tablet) {
-        margin-top: 1rem;
+      @media (min-width: 1024px) {
+        display: block; // Show only on desktop and larger screens
       }
     }
     

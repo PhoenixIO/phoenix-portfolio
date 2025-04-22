@@ -2,22 +2,28 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SpaceBackground from '../components/home/SpaceBackground';
+import { contacts } from '@/data/contact';
 import '../styles/pages/HomePage.scss';
 
 // Skill icon component with floating animation
 const SkillIcons = () => {
   const skills = [
     { name: 'React', color: '#61DAFB' },
-    { name: 'TypeScript', color: '#3178C6' },
-    { name: 'Node.js', color: '#339933' },
-    { name: 'SASS', color: '#CC6699' },
-    { name: 'ThreeJS', color: '#000000' },
-    { name: 'C++', color: '#00599C' },
-    { name: 'Python', color: '#3776AB' },
-    { name: 'Phaser', color: '#5DCDE2' },
     { name: 'NestJS', color: '#E0234E' },
-    { name: 'RestAPI', color: '#FF6C37' },
-    { name: 'WebSockets', color: '#4353FF' }
+    { name: 'Node.js', color: '#7BC74D' },
+    { name: 'SASS', color: '#CD6799' },
+    { name: 'Redux', color: '#764ABC' },
+    { name: 'RestAPI', color: '#FF8F59' },
+    { name: 'TypeScript', color: '#3178C6' },
+    { name: 'MongoDB', color: '#47A248' },
+    { name: 'ThreeJS', color: '#8C8DFC' },
+    { name: 'PostgreSQL', color: '#336791' },
+    { name: 'Tailwind CSS', color: '#38B2AC' },
+    { name: 'C++', color: '#649AD2' },
+    { name: 'WebSockets', color: '#7F7FFF' },
+    { name: 'AI Integration', color: '#10A37F' },
+    { name: 'Phaser', color: '#5DD3F8' },
+    { name: 'Python', color: '#4B8BBE' },
   ];
 
   return (
@@ -70,7 +76,7 @@ const SocialLinks = () => {
       transition={{ duration: 0.8, delay: 0.5 }}
     >
       <a 
-        href="https://github.com/yourusername" 
+        href={contacts.github} 
         target="_blank" 
         rel="noopener noreferrer"
         aria-label="GitHub"
@@ -82,7 +88,7 @@ const SocialLinks = () => {
       </a>
       
       <a 
-        href="https://t.me/yourusername" 
+        href={contacts.telegram}
         target="_blank" 
         rel="noopener noreferrer"
         aria-label="Telegram"

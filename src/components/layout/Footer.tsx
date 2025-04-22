@@ -10,8 +10,8 @@ const Footer: React.FC = () => {
       <div className="footer-container">
         <div className="footer-top">
           <div className="footer-logo">
-            <span className="logo-text">YourName</span>
-            <p className="tagline">Web Developer & UI Designer</p>
+            <span className="logo-text">{contacts.fullname}</span>
+            <p className="tagline">Fullstack Web Developer & Software Engineer</p>
           </div>
           
           <div className="footer-links">

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import ContactForm from '../components/common/ContactForm';
 import { animations } from '../utils/animations';
+import { contacts } from '@/data/contact';
 import '../styles/pages/ContactPage.scss';
 
 const ContactPage: React.FC = () => {
@@ -58,7 +59,7 @@ const ContactPage: React.FC = () => {
             </div>
             <div className="info-text">
               <h3>Email</h3>
-              <p>your.email@example.com</p>
+              <p>{contacts.email}</p>
             </div>
           </div>
           
@@ -70,7 +71,7 @@ const ContactPage: React.FC = () => {
             </div>
             <div className="info-text">
               <h3>GitHub</h3>
-              <p>github.com/yourusername</p>
+              <p>{contacts.github}</p>
             </div>
           </div>
           
@@ -84,7 +85,7 @@ const ContactPage: React.FC = () => {
             </div>
             <div className="info-text">
               <h3>LinkedIn</h3>
-              <p>linkedin.com/in/yourusername</p>
+              <p>{contacts.linkedin}</p>
             </div>
           </div>
         </div>

@@ -111,10 +111,6 @@ const ExperienceStats = () => {
         <span className="stat-number">+46</span>
         <span className="stat-label">Projects Completed</span>
       </div>
-      <div className="stat-item">
-        <span className="stat-number">+20</span>
-        <span className="stat-label">Worldwide Clients</span>
-      </div>
     </motion.div>
   );
 };
@@ -133,53 +129,58 @@ const HomePage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0 }}
       >
-        <motion.h1 
-          className="home-title"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          Ваше Ім'я
-        </motion.h1>
-        
-        <motion.p 
-          className="home-subtitle"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          Software Engineer
-        </motion.p>
-        
-        <motion.p 
-          className="home-description"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          Passionate about creating intuitive and engaging user experiences. 
-          Specialize in transforming ideas into beautifully crafted products.
-        </motion.p>
-        
-        <ExperienceStats />
-        
-        <SkillIcons />
-        
-        <motion.div 
-          className="cta-buttons"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <Link to="/projects" className="start-journey-btn">
-            View Projects
-          </Link>
-          <Link to="/contact" className="contact-btn">
-            Contact Me
-          </Link>
-        </motion.div>
-        
-        <SocialLinks />
+        <div className="two-column-layout">
+          <div className="left-column">
+            <motion.h1 
+              className="home-title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Matviichuk Kostiantyn
+            </motion.h1>
+            
+            <motion.p 
+              className="home-subtitle"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              Software Engineer
+            </motion.p>
+            
+            <motion.p 
+              className="home-description"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Passionate about creating intuitive and engaging user experiences. 
+              Specialize in transforming ideas into beautifully crafted products.
+            </motion.p>
+            
+            <motion.div 
+              className="cta-buttons"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <Link to="/projects" className="start-journey-btn">
+                View Projects
+              </Link>
+              <Link to="/contact" className="contact-btn">
+                Contact Me
+              </Link>
+            </motion.div>
+            
+            <SocialLinks />
+          </div>
+          
+          <div className="right-column">
+            <ExperienceStats />
+            <SkillIcons />
+          </div>
+        </div>
       </motion.div>
     </div>
   );

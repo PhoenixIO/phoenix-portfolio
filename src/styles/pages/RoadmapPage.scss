@@ -8,74 +8,76 @@
   color: vars.$text-primary;
   overflow-x: hidden;
   
-  /* Background elements */
   .parallax-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    min-height: 100vh;
-    z-index: vars.$z-background;
-    opacity: 0.5;
     pointer-events: none;
-    will-change: transform;
+    z-index: 0;
     
     &.bg-1 {
-      background: radial-gradient(circle at 20% 30%, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
+      background: radial-gradient(circle at 20% 30%, rgba(124, 58, 237, 0.3) 0%, transparent 80%);
+      opacity: 0.8;
     }
     
     &.bg-2 {
-      background: radial-gradient(circle at 80% 70%, rgba(8, 145, 178, 0.2) 0%, transparent 70%);
+      background: radial-gradient(circle at 80% 70%, rgba(8, 145, 178, 0.3) 0%, transparent 80%);
+      opacity: 0.6;
     }
   }
-  
-  /* Floating particles */
+
+  /* Particles container and particles */
   .particles-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: vars.$z-background;
-    pointer-events: none;
     overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .particle {
+    position: relative;
+    border-radius: 50%;
+    opacity: 0.5;
     
-    .particle {
-      position: absolute;
+    &-0 {
+      width: 10px;
+      height: 10px;
+      background-color: vars.$accent-purple;
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    }
+    
+    &-1 {
       width: 6px;
       height: 6px;
-      border-radius: 50%;
-      opacity: 0.4;
-      
-      &.particle-0 {
-        background-color: vars.$accent-purple;
-        box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
-      }
-      
-      &.particle-1 {
-        background-color: vars.$accent-blue;
-        box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
-      }
-      
-      &.particle-2 {
-        background-color: vars.$accent-cyan;
-        box-shadow: 0 0 10px rgba(8, 145, 178, 0.5);
-      }
-      
-      &.particle-3 {
-        background-color: white;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      }
-      
-      // Distribute particles throughout the page
-      @for $i from 0 through 19 {
-        &:nth-child(#{$i + 1}) {
-          top: percentage(random(100) / 100);
-          left: percentage(random(100) / 100);
-          width: #{6}px;
-          height: #{6}px;
-        }
+      background-color: vars.$accent-blue;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+    }
+    
+    &-2 {
+      width: 8px;
+      height: 8px;
+      background-color: vars.$accent-cyan;
+      box-shadow: 0 0 14px rgba(8, 145, 178, 0.5);
+    }
+    
+    &-3 {
+      width: 5px;
+      height: 5px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Distribute particles across the screen */
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        top: #{random(100)}vh;
+        left: #{random(100)}vw;
       }
     }
   }
@@ -151,7 +153,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    z-index: vars.$z-content; /* Added z-index to ensure content is above background */
+    z-index: vars.$z-content;
     
     @include mixins.responsive(tablet) {
       padding: 5rem 1.5rem;
@@ -803,33 +805,5 @@
         color: white;
       }
     }
-  }
-}
-
-/* Animations */
-@keyframes float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
   }
 }

@@ -71,43 +71,60 @@ const RoadmapPage: React.FC = () => {
     contact: null
   });
   
-  // Setup scroll animations
-  // Modified useEffect for properly handling animations
+  const pageWrapperRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<HTMLDivElement>(null);
+  
+  // Setup animations and parallax effects
   useEffect(() => {
+    if (!pageWrapperRef.current) return;
+    
+    // Make sure elements are visible by default (failsafe)
     document.querySelectorAll('.skill-category, .skill-card').forEach(el => {
       gsap.set(el, { opacity: 1 });
     });
 
-    const animations: any = [];
+    const animations: any[] = [];
     
-    const parallaxBg1 = document.querySelector('.bg-1');
-    const parallaxBg2 = document.querySelector('.bg-2');
-  
-    if (parallaxBg1 && parallaxBg2) {
-      const parallaxAnimation1 = gsap.to(parallaxBg1, {
-        yPercent: 30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1
-        }
-      });
+    // Initialize the particles animation
+    if (particlesRef.current) {
+      // First, position the particles randomly across the screen
+      const particles = particlesRef.current.querySelectorAll('.particle');
       
-      const parallaxAnimation2 = gsap.to(parallaxBg2, {
-        yPercent: -30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1
-        }
+      particles.forEach((particle, index) => {
+        // Random initial positions
+        const startX = Math.random() * window.innerWidth;
+        const startY = Math.random() * window.innerHeight;
+        
+        gsap.set(particle, {
+          x: startX,
+          y: startY,
+          opacity: 0
+        });
+        
+        // Fade in with slight delay based on index
+        gsap.to(particle, {
+          opacity: Math.random() * 0.5 + 0.2, // Random opacity between 0.2 and 0.7
+          duration: 2,
+          delay: index * 0.1
+        });
+        
+        // Create random floating animation for each particle
+        const xDistance = Math.random() * 100 - 50; // -50 to 50
+        const yDistance = Math.random() * 100 - 50; // -50 to 50
+        const duration = 5 + Math.random() * 15; // 5 to 20 seconds
+        
+        const particleAnim = gsap.to(particle, {
+          x: `+=${xDistance}`,
+          y: `+=${yDistance}`,
+          duration: duration,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: index * 0.1
+        });
+        
+        animations.push(particleAnim);
       });
-      
-      // Add to animations array for proper cleanup
-      animations.push(parallaxAnimation1, parallaxAnimation2);
     }
 
     // Hero section animations
@@ -127,7 +144,7 @@ const RoadmapPage: React.FC = () => {
     
     animations.push(heroTimeline);
     
-    // Section header animations - with failsafe
+    // Section header animations
     document.querySelectorAll('.section-header').forEach((header) => {
       try {
         const headerAnim = gsap.from(header, {
@@ -143,12 +160,11 @@ const RoadmapPage: React.FC = () => {
         animations.push(headerAnim);
       } catch (error) {
         console.error("Error animating section header:", error);
-        // Failsafe - ensure visibility if animation fails
         gsap.set(header, { opacity: 1, y: 0 });
       }
     });
     
-    // Technical skills animations - with failsafe
+    // Technical skills animations
     document.querySelectorAll('.skill-category').forEach((category, index) => {
       try {
         const categoryAnim = gsap.timeline({
@@ -176,14 +192,12 @@ const RoadmapPage: React.FC = () => {
         animations.push(categoryAnim);
       } catch (error) {
         console.error("Error animating skill category:", error);
-        // Failsafe - ensure visibility if animation fails
         gsap.set(category.querySelector('.category-title'), { opacity: 1, x: 0 });
         gsap.set(category.querySelectorAll('.skill-card'), { opacity: 1, y: 0 });
       }
     });
     
     // Initialize progress bars immediately to their data-level values
-    // This ensures they display even if animations fail
     document.querySelectorAll('.skill-progress-fill, .progress-fill').forEach(fill => {
       const level = fill.getAttribute('data-level');
       if (level) {
@@ -191,7 +205,7 @@ const RoadmapPage: React.FC = () => {
       }
     });
     
-    // Animate progress bars with a direct approach
+    // Animate progress bars
     document.querySelectorAll('.soft-skill-progress').forEach((progress) => {
       const progressBar = progress.querySelector('.progress-fill');
       const level = progressBar?.getAttribute('data-level');
@@ -215,12 +229,12 @@ const RoadmapPage: React.FC = () => {
           animations.push(progressAnim);
         } catch (error) {
           console.error("Error animating progress bar:", error);
-          // Failsafe - ensure visibility if animation fails
           gsap.set(progressBar, { width: `${level}%` });
         }
       }
     });
 
+    // Update active section on scroll
     const updateActiveSection = () => {
       for (const key in sectionsRef.current) {
         const section = sectionsRef.current[key];
@@ -239,8 +253,7 @@ const RoadmapPage: React.FC = () => {
     window.addEventListener('scroll', updateActiveSection);
     updateActiveSection();
     
-    // Ensure all sections are visible by default
-    // This is a failsafe in case GSAP animations don't trigger
+    // Failsafe for visibility
     setTimeout(() => {
       document.querySelectorAll('.skill-category, .soft-skill-item, .education-item, .certification-item, .timeline-item')
         .forEach(el => {
@@ -272,20 +285,44 @@ const RoadmapPage: React.FC = () => {
       });
     }
   };
-  
+
+  const generateParticles = (count = 30) => {
+    const particles = [];
+    
+    for (let i = 0; i < count; i++) {
+      // Get random type (0-3)
+      const type = Math.floor(Math.random() * 4);
+      
+      // Get random size variation (80%-120% of base size)
+      const sizeVariation = 0.8 + Math.random() * 0.4;
+      
+      // Create particle with random properties
+      particles.push(
+        <div 
+          key={i} 
+          className={`particle particle-${type}`} 
+          style={{ 
+            transform: `scale(${sizeVariation})`,
+            opacity: 0 // Start invisible, will animate in
+          }}
+        />
+      );
+    }
+    
+    return particles;
+  };
+
   return (
-    <div className="roadmap-page">
+    <div className="roadmap-page" ref={pageWrapperRef}>
       {/* Background elements */}
       <div className="parallax-bg bg-1"></div>
       <div className="parallax-bg bg-2"></div>
       
       {/* Floating particles for visual interest */}
-      <div className="particles-container">
-        {[...Array(20)].map((_, i) => (
-          <div key={i} className={`particle particle-${i % 4}`}></div>
-        ))}
+      <div className="particles-container" ref={particlesRef}>
+        {generateParticles(35)}
       </div>
-      
+          
       {/* Vertical navigation */}
       <div className="vertical-nav">
         <div 

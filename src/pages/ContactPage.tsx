@@ -45,10 +45,6 @@ const ContactPage: React.FC = () => {
       </div>
       
       <div className="contact-content">
-        <div className="form-section" ref={formRef}>
-          <ContactForm onSubmit={handleFormSubmit} />
-        </div>
-        
         <div className="contact-cards" ref={contactsRef}>
           <a href={`mailto:${contacts.email}`} className="contact-card">
             <div className="card-icon">
@@ -124,6 +120,10 @@ const ContactPage: React.FC = () => {
               </svg>
             </div>
           </a>
+        </div>
+
+        <div className="form-section" ref={formRef}>
+          <ContactForm onSubmit={handleFormSubmit} />
         </div>
       </div>
       

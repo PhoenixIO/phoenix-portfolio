@@ -4,10 +4,106 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { skills } from '../data/skills';
 import { contacts } from '../data/contacts';
+import { certificates } from '@/data/certificates';
 import '../styles/pages/RoadmapPage.scss';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
+
+// Certificate interface (this would typically be defined in a types file)
+interface Certificate {
+  id: number;
+  name: string;
+  issuer: string;
+  year: number;
+  filePath: string;
+  fileType: 'pdf' | 'jpg' | 'png';
+}
+
+// Custom PDF Viewer component
+const PDFViewer = ({ pdfPath }: { pdfPath: string }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  
+  return (
+    <div className="pdf-viewer">
+      <div className="pdf-controls">
+        <button 
+          className="pdf-control-button"
+          disabled={currentPage <= 1}
+          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+        >
+          Previous
+        </button>
+        <span className="pdf-page-indicator">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button 
+          className="pdf-control-button"
+          disabled={currentPage >= totalPages}
+          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+        >
+          Next
+        </button>
+      </div>
+      <div className="pdf-container">
+        <embed 
+          src={`${pdfPath}#page=${currentPage}`}
+          type="application/pdf" 
+          width="100%" 
+          height="100%" 
+          onLoad={() => setTotalPages(totalPages)}
+        />
+      </div>
+    </div>
+  );
+};
+
+// Certificate Modal Component
+const CertificateModal = ({ 
+  certificate, 
+  onClose 
+}: { 
+  certificate: Certificate | null, 
+  onClose: () => void 
+}) => {
+  if (!certificate) return null;
+  
+  const renderCertificateContent = () => {
+    switch (certificate.fileType) {
+      case 'pdf':
+        return <PDFViewer pdfPath={certificate.filePath} />;
+      case 'jpg':
+      case 'png':
+        return (
+          <img 
+            src={certificate.filePath} 
+            alt={certificate.name} 
+            className="certificate-image" 
+          />
+        );
+      default:
+        return <p>Unsupported file format</p>;
+    }
+  };
+  
+  return (
+    <div className="certificate-modal-overlay" onClick={onClose}>
+      <div className="certificate-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="certificate-modal-header">
+          <h2>{certificate.name}</h2>
+          <button className="close-button" onClick={onClose}>×</button>
+        </div>
+        <div className="certificate-modal-body">
+          {renderCertificateContent()}
+        </div>
+        <div className="certificate-modal-footer">
+          <p>{certificate.issuer} - {certificate.year}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Group skills by category
 const skillsByCategory = skills.reduce((acc, skill) => {
@@ -35,7 +131,7 @@ const softSkills = [
   { id: 5, name: 'Adaptability', level: 90, description: 'Quick to learn and apply new technologies and methods' }
 ];
 
-// Education/certification data - these would typically come from a data file
+// Education data - these would typically come from a data file
 const education = [
   {
     id: 1, 
@@ -53,15 +149,10 @@ const education = [
   }
 ];
 
-// Certifications data
-const certifications = [
-  { id: 1, name: 'AWS Certified Developer', issuer: 'Amazon Web Services', year: 2022 },
-  { id: 2, name: 'Professional Web Developer', issuer: 'Frontend Masters', year: 2021 },
-  { id: 3, name: 'React Advanced Concepts', issuer: 'React Training', year: 2020 }
-];
-
 const RoadmapPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('intro');
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
+  
   const sectionsRef = useRef<{ [key: string]: HTMLElement | null }>({
     intro: null,
     technical: null,
@@ -73,6 +164,20 @@ const RoadmapPage: React.FC = () => {
   
   const pageWrapperRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
+  
+  // Open certificate modal
+  const openCertificateModal = (certificate: Certificate) => {
+    setSelectedCertificate(certificate);
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+  
+  // Close certificate modal
+  const closeCertificateModal = () => {
+    setSelectedCertificate(null);
+    // Re-enable body scrolling
+    document.body.style.overflow = '';
+  };
   
   // Setup animations and parallax effects
   useEffect(() => {
@@ -233,6 +338,28 @@ const RoadmapPage: React.FC = () => {
         }
       }
     });
+    
+    // Animation for certification items
+    document.querySelectorAll('.certification-item').forEach((item, index) => {
+      try {
+        const itemAnim = gsap.from(item, {
+          y: 30,
+          opacity: 0,
+          duration: 0.6,
+          delay: index * 0.1,
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        });
+        
+        animations.push(itemAnim);
+      } catch (error) {
+        console.error("Error animating certification item:", error);
+        gsap.set(item, { opacity: 1, y: 0 });
+      }
+    });
 
     // Update active section on scroll
     const updateActiveSection = () => {
@@ -322,6 +449,14 @@ const RoadmapPage: React.FC = () => {
       <div className="particles-container" ref={particlesRef}>
         {generateParticles(35)}
       </div>
+      
+      {/* Certificate Modal */}
+      {selectedCertificate && (
+        <CertificateModal 
+          certificate={selectedCertificate} 
+          onClose={closeCertificateModal} 
+        />
+      )}
           
       {/* Vertical navigation */}
       <div className="vertical-nav">
@@ -521,11 +656,23 @@ const RoadmapPage: React.FC = () => {
         <div className="certifications-container">
           <h3 className="subsection-title">Certifications</h3>
           <div className="certifications-grid">
-            {certifications.map((cert) => (
-              <div key={cert.id} className="certification-item">
+            {certificates.map((cert: Certificate) => (
+              <div 
+                key={cert.id} 
+                className="certification-item"
+                onClick={() => openCertificateModal(cert)}
+              >
                 <div className="certification-year">{cert.year}</div>
                 <h4 className="certification-name">{cert.name}</h4>
                 <div className="certification-issuer">{cert.issuer}</div>
+                <div className="view-certificate">
+                  <span>View Certificate</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </div>
               </div>
             ))}
           </div>

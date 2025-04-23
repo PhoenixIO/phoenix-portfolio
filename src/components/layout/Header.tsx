@@ -11,9 +11,9 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { title: 'Main', path: '/' },
-  { title: 'Technology', path: '/roadmap' },
-  { title: 'Projects', path: '/projects' },
-  { title: 'Contact', path: '/contact' }
+  { title: 'Tech Stack', path: '/roadmap' },
+  { title: 'My Projects', path: '/projects' },
+  { title: 'Contacts', path: '/contact' }
 ];
 
 const Header: React.FC = () => {

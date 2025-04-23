@@ -4,91 +4,107 @@ export interface Project {
   description: string;
   images: string[]; // Changed from single image to array of images
   technologies: string[];
-  demoUrl: string;
-  codeUrl: string;
+  demoUrl?: string;
+  codeUrl?: string;
   featured: boolean;
 }
 
 export const projects: Project[] = [
   {
     id: 1,
-    title: 'Space Portal',
-    description: 'Interactive 3D website using Three.js and GSAP. Space journey with interactive elements and WebGL animations.',
+    title: 'Avoids.io',
+    description: 'Avoids.io (formerly Phoenix.io) – my first project, launched in 2018. It\'s a multiplayer game centered around the core concept of dodging enemies, unlocking new worlds and characters, and having fun with friends.',
     images: [
-      '/projects/space-portal/preview.jpg',
-      '/projects/space-portal/screenshot1.jpg',
-      '/projects/space-portal/screenshot2.jpg'
+      '/projects/avoids.io/avoids1.png',
+      '/projects/avoids.io/Screenshot_5.png',
+      '/projects/avoids.io/Screenshot_97.png',
     ],
-    technologies: ['React', 'Three.js', 'GSAP', 'TypeScript'],
-    demoUrl: 'https://example.com/demo1',
-    codeUrl: 'https://github.com/username/space-portal',
+    technologies: ['React', 'JavaScript', 'uWebSockets'],
+    demoUrl: 'https://avoids.io/',
     featured: true
   },
   {
     id: 2,
-    title: 'Task Manager',
-    description: 'Application for task management with drag-and-drop features, priority marking and reminders. Integrated with local storage.',
+    title: 'CryptoSlither',
+    description: 'CryptoSlither – a multiplayer slither.io-style game with an integrated cryptocurrency system and real-time PvP mechanics.',
     images: [
-      '/projects/task-manager/preview.jpg',
-      '/projects/task-manager/screenshot1.jpg'
+      '/projects/crypto.slither/Screenshot_666.png',
+      '/projects/crypto.slither/Screenshot_171.png',
+      '/projects/crypto.slither/Screenshot_276.png',
     ],
-    technologies: ['React', 'TypeScript', 'SCSS', 'Redux'],
-    demoUrl: 'https://example.com/demo2',
-    codeUrl: 'https://github.com/username/task-manager',
+    technologies: ['Canvas', 'JavaScript', 'express', 'React'],
     featured: true
   },
   {
     id: 3,
-    title: 'Music Visualizer',
-    description: 'Interactive music visualizer that analyzes audio through Web Audio API and creates synchronized visual effects using Canvas.',
+    title: 'Cubeshot.io',
+    description: 'CubeShot is an objective-based 3D first person shooter. On this awesome first person shooter game every match is an intense unique experience.',
     images: [
-      '/projects/music-visualizer/preview.jpg',
-      '/projects/music-visualizer/screenshot1.jpg',
-      '/projects/music-visualizer/screenshot2.jpg',
-      '/projects/music-visualizer/screenshot3.jpg'
+      '/projects/cubeshot.io/Screenshot_193.png',
+      '/projects/cubeshot.io/Screenshot_273.png',
+      '/projects/cubeshot.io/Screenshot_338.png',
     ],
-    technologies: ['JavaScript', 'Canvas API', 'Web Audio API'],
-    demoUrl: 'https://example.com/demo3',
-    codeUrl: 'https://github.com/username/music-visualizer',
+    technologies: ['ThreeJS', 'Vue', 'Web Audio API'],
+    demoUrl: 'https://cubeshot.io/',
     featured: true
   },
   {
     id: 4,
-    title: 'Photographer Portfolio',
-    description: 'Minimalist portfolio website for a photographer with image gallery, smooth transitions and responsive design.',
+    title: 'CosmoTravel',
+    description: 'CosmoTravel – a space-themed website designed to capture the beauty of the cosmos; winner of a Web Design competition (see certificate in Projects).',
     images: [
-      '/projects/photo-portfolio/preview.jpg'
+      '/projects/cosmo.travel/Screenshot_3.png',
+      '/projects/cosmo.travel/Screenshot_1.png',
+      '/projects/cosmo.travel/Screenshot_2.png',
     ],
     technologies: ['React', 'Framer Motion', 'CSS Grid'],
-    demoUrl: 'https://example.com/demo4',
-    codeUrl: 'https://github.com/username/photo-portfolio',
+    demoUrl: 'https://cosmospace-tourism.netlify.app/',
+    codeUrl: 'https://github.com/PhoenixIO/space-tourism',
     featured: false
   },
   {
     id: 5,
-    title: 'Weather App',
-    description: 'Web application for viewing weather using a public API and geolocation. Interactive animated weather icons.',
+    title: 'Vinnitsia Castles',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
     images: [
-      '/projects/weather-app/preview.jpg',
-      '/projects/weather-app/screenshot1.jpg'
+      '/projects/castles/Screenshot_98.png',
     ],
-    technologies: ['React', 'API', 'GeoLocation'],
-    demoUrl: '',  // Empty demo URL example
-    codeUrl: 'https://github.com/username/weather-app',
+    technologies: ['React', 'JavaScript', 'SASS'],
+    demoUrl: '',
     featured: false
   },
   {
     id: 6,
-    title: 'Interactive Infographics',
-    description: 'Animated data visualization about climate change using D3.js and SVG.',
+    title: 'Clipper',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
     images: [
-      '/projects/climate-infographic/preview.jpg',
-      '/projects/climate-infographic/screenshot1.jpg',
-      '/projects/climate-infographic/screenshot2.jpg'
+      '/projects/clipper/Screenshot_1.png',
     ],
-    technologies: ['D3.js', 'SVG', 'TypeScript'],
-    demoUrl: 'https://example.com/demo6',
-    codeUrl: '',  // Empty code URL example
+    technologies: ['TypeScript', 'React', 'Tailwind', 'fastify', 'RestAPI', 'Swagger'],
+    demoUrl: 'https://dev.clipper.io/',
+    codeUrl: '',
+    featured: true
+  },
+  {
+    id: 6,
+    title: 'Drivva',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
+    images: [
+      '/projects/drivva/Screenshot_4.png',
+    ],
+    technologies: ['NestJS', 'React', 'TypeScript', 'SASS'],
+    demoUrl: 'https://drivva.com/',
+    featured: true
+  },
+  {
+    id: 6,
+    title: 'Swordbattle.io',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
+    images: [
+      '/projects/swordbattle.io/Screenshot_169.png',
+    ],
+    technologies: ['Phaser', 'TypeScript', 'uWebSockets'],
+    demoUrl: 'https://swordbattle.io/',
     featured: true
   }
 ];

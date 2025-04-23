@@ -28,30 +28,30 @@ const categoryNames: Record<string, string> = {
   tooling: 'Development Tools'
 };
 
-// Soft skills - these would typically come from a data file
+// Soft skills based on resume information
 const softSkills = [
-  { id: 1, name: 'Problem Solving', level: 90, description: 'Analytical approach to resolving complex technical challenges' },
-  { id: 2, name: 'Team Collaboration', level: 85, description: 'Experience working in agile development environments' },
-  { id: 3, name: 'Communication', level: 80, description: 'Clear articulation of technical concepts to diverse audiences' },
-  { id: 4, name: 'Time Management', level: 85, description: 'Efficient prioritization of tasks to meet project deadlines' },
-  { id: 5, name: 'Adaptability', level: 90, description: 'Quick to learn and apply new technologies and methods' }
+  { id: 1, name: 'Time Management', level: 90, description: 'Efficient prioritization of tasks to meet project deadlines' },
+  { id: 2, name: 'Team Collaboration', level: 85, description: 'Experience working in development teams and finding compromises' },
+  { id: 3, name: 'Communication', level: 80, description: 'Clear articulation of technical concepts and quick feedback' },
+  { id: 4, name: 'Creative Problem Solving', level: 90, description: 'Finding effective solutions for technical challenges' },
+  { id: 5, name: 'Adaptability', level: 85, description: 'Quick to learn and apply new technologies and methods' }
 ];
 
-// Education data - these would typically come from a data file
+// Education data based on resume information
 const education = [
   {
     id: 1, 
-    degree: 'Master of Computer Science',
-    institution: 'Kyiv National University',
-    period: '2018 - 2020',
-    description: 'Specialized in Web Technologies and Interactive Systems'
+    degree: 'Higher Education',
+    institution: 'VSP VіFK NUFT',
+    period: '2021 - 2025',
+    description: 'Continuing professional education in technology'
   },
   {
     id: 2, 
-    degree: 'Bachelor of Software Engineering',
-    institution: 'Lviv Polytechnic National University',
-    period: '2014 - 2018',
-    description: 'Focus on application development and software architecture'
+    degree: 'Secondary Education',
+    institution: 'Vinnytsia Private Gymnasium "Dolphin"',
+    period: '2018 - 2020',
+    description: 'Foundational education with technology focus'
   }
 ];
 
@@ -441,11 +441,13 @@ const RoadmapPage: React.FC = () => {
         ref={(el: HTMLDivElement | null) => { sectionsRef.current.intro = el }}
       >
         <div className="hero-content">
-          <h1 className="hero-title">Kostiantyn Matviychuck</h1>
-          <h2 className="hero-subtitle">Frontend Developer & Creative Technologist</h2>
+          <h1 className="hero-title">Kostiantyn Matviichuk</h1>
+          <h2 className="hero-subtitle">Full-Stack Developer</h2>
           <p className="hero-description">
-            Passionate about creating immersive web experiences using cutting-edge technologies.
-            Specializing in interactive 3D graphics, animations, and modern web applications.
+            Creative engineer with a passion for crafting elegant, scalable, and flexible systems.  
+            Since 2018, I’ve been building everything from immersive web apps to multiplayer games —  
+            architecting robust solutions across frontend and backend with React, Node.js, TypeScript, and beyond.  
+            I thrive at the intersection of clean code, thoughtful design, and technical curiosity.
           </p>
           <div className="scroll-indicator">
             <span>Scroll to explore my journey</span>
@@ -504,14 +506,14 @@ const RoadmapPage: React.FC = () => {
           <div className="timeline-item left">
             <div className="timeline-point"></div>
             <div className="timeline-content">
-              <div className="timeline-date">2022 - Present</div>
-              <h3 className="timeline-title">Senior Frontend Developer</h3>
-              <h4 className="timeline-company">InnoTech Solutions</h4>
+              <div className="timeline-date">2022 September - Present</div>
+              <h3 className="timeline-title">Fullstack Developer</h3>
+              <h4 className="timeline-company">Jack Mayer</h4>
               <ul className="timeline-responsibilities">
-                <li>Led development of interactive 3D product visualizations using Three.js</li>
-                <li>Implemented complex animations and transitions with GSAP</li>
-                <li>Optimized application performance for diverse devices</li>
-                <li>Mentored junior developers in modern frontend practices</li>
+                <li>Development of Cubeshot.io, Senpa.io, drivva.com and clipper.io</li>
+                <li>Implementation of 3D physics calculations</li>
+                <li>Frontend optimization for performance across devices</li>
+                <li>Interactive game mechanics development</li>
               </ul>
             </div>
           </div>
@@ -519,14 +521,14 @@ const RoadmapPage: React.FC = () => {
           <div className="timeline-item right">
             <div className="timeline-point"></div>
             <div className="timeline-content">
-              <div className="timeline-date">2020 - 2022</div>
-              <h3 className="timeline-title">Frontend Developer</h3>
-              <h4 className="timeline-company">WebCraft Studio</h4>
+              <div className="timeline-date">2022 October - Present</div>
+              <h3 className="timeline-title">Backend Developer</h3>
+              <h4 className="timeline-company">WheelaStudio</h4>
               <ul className="timeline-responsibilities">
-                <li>Developed responsive web applications using React and TypeScript</li>
-                <li>Created custom animations and interactive elements</li>
-                <li>Worked closely with designers to implement pixel-perfect interfaces</li>
-                <li>Integrated web applications with backend services via REST APIs</li>
+                <li>Development of Callmar - a callback service for websites</li>
+                <li>Integration of chat widgets for customer feedback</li>
+                <li>Backend API development and optimization</li>
+                <li>Implementation of real-time communication features</li>
               </ul>
             </div>
           </div>
@@ -534,14 +536,44 @@ const RoadmapPage: React.FC = () => {
           <div className="timeline-item left">
             <div className="timeline-point"></div>
             <div className="timeline-content">
-              <div className="timeline-date">2018 - 2020</div>
-              <h3 className="timeline-title">Junior Web Developer</h3>
-              <h4 className="timeline-company">Digital Horizons</h4>
+              <div className="timeline-date">2022 July - September</div>
+              <h3 className="timeline-title">Backend Developer</h3>
+              <h4 className="timeline-company">Jack Mayer</h4>
               <ul className="timeline-responsibilities">
-                <li>Built and maintained client websites using modern web technologies</li>
-                <li>Implemented responsive designs for optimal viewing across devices</li>
-                <li>Created interactive UI components and animations</li>
-                <li>Participated in code reviews and team knowledge sharing sessions</li>
+                <li>Development of Gigga.io - a 2D game in diep.io style</li>
+                <li>Implementation of game mechanics and features</li>
+                <li>Server-side optimization for multiplayer functionality</li>
+                <li>Real-time player synchronization</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="timeline-item right">
+            <div className="timeline-point"></div>
+            <div className="timeline-content">
+              <div className="timeline-date">2021 December - 2022 January</div>
+              <h3 className="timeline-title">Full-Stack Developer</h3>
+              <h4 className="timeline-company">WheelaStudio</h4>
+              <ul className="timeline-responsibilities">
+                <li>Development of Crypto Slither.io - a cryptocurrency-themed game</li>
+                <li>Integration of cryptocurrency-related game mechanics</li>
+                <li>Frontend and backend development for game features</li>
+                <li>Implementation of monetization features</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="timeline-item left">
+            <div className="timeline-point"></div>
+            <div className="timeline-content">
+              <div className="timeline-date">2018 September - Present</div>
+              <h3 className="timeline-title">Project Manager & Full-Stack Developer</h3>
+              <h4 className="timeline-company">PhoenixStudio (Self-employed)</h4>
+              <ul className="timeline-responsibilities">
+                <li>Development of Phoenix.io - a multiplayer game project</li>
+                <li>Transition from single-player to multiplayer using NodeJS</li>
+                <li>Game design, mechanics implementation, and optimization</li>
+                <li>Project sold and launched as avoids.io in 2022</li>
               </ul>
             </div>
           </div>

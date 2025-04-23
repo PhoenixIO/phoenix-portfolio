@@ -287,7 +287,7 @@
         border-radius: 12px;
         padding: 1.5rem;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {
           transform: translateY(-5px);
@@ -340,7 +340,7 @@
               height: 100%;
               background: linear-gradient(to right, #7c3aed, #2563eb);
               border-radius: 4px;
-              transition: width 1.5s ease-out;
+              /* Remove transition - let GSAP handle animations */
             }
           }
         }
@@ -505,7 +505,7 @@
       border-radius: 12px;
       padding: 1.5rem;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
       &:hover {
         transform: translateY(-5px);
@@ -553,7 +553,7 @@
           height: 100%;
           background: linear-gradient(to right, #7c3aed, #2563eb);
           border-radius: 4px;
-          transition: width 1.5s ease-out;
+          /* Remove transition - let GSAP handle animations */
         }
       }
       
@@ -654,13 +654,24 @@
         border-radius: 12px;
         padding: 1.5rem;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-
-        &:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        
+        /* Modified to avoid conflicts with GSAP animations */
+        transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background: linear-gradient(to right, vars.$accent-purple, vars.$accent-cyan);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s ease;
         }
         
         .certification-year {
@@ -680,6 +691,33 @@
         .certification-issuer {
           font-size: 0.9rem;
           color: vars.$text-secondary;
+        }
+        
+        .view-certificate {
+          margin-top: 0.8rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          color: vars.$accent-cyan;
+          opacity: 0.7;
+          transition: opacity 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Modified hover effect to work with GSAP */
+        &:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+          
+          &::after {
+            transform: scaleX(1);
+          }
+          
+          .view-certificate {
+            opacity: 1;
+            color: white;
+          }
         }
       }
     }
@@ -805,52 +843,6 @@
       
       &.next-btn {
         background: linear-gradient(to right, #7c3aed, #2563eb);
-        color: white;
-      }
-    }
-  }
-  
-  /* Update certification item styles */
-  .certification-item {
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(to right, vars.$accent-purple, vars.$accent-cyan);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-    
-    .view-certificate {
-      margin-top: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: vars.$accent-cyan;
-      opacity: 0.7;
-      transition: all 0.3s ease;
-    }
-    
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      
-      &::after {
-        transform: scaleX(1);
-      }
-      
-      .view-certificate {
-        opacity: 1;
         color: white;
       }
     }

@@ -70,6 +70,7 @@ const RoadmapPage: React.FC = () => {
   
   const pageWrapperRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
+  const animationsInitializedRef = useRef(false);
   
   // Open certificate modal
   const openCertificateModal = (certificate: Certificate) => {
@@ -87,78 +88,57 @@ const RoadmapPage: React.FC = () => {
   
   // Setup animations and parallax effects
   useEffect(() => {
-    if (!pageWrapperRef.current) return;
+    if (!pageWrapperRef.current || animationsInitializedRef.current) return;
     
-    // Make sure elements are visible by default (failsafe)
-    document.querySelectorAll('.skill-category, .skill-card').forEach(el => {
-      gsap.set(el, { opacity: 1 });
-    });
-
-    const animations: any[] = [];
+    // Mark animations as initialized to prevent double initialization
+    animationsInitializedRef.current = true;
     
-    // Initialize the particles animation
-    if (particlesRef.current) {
-      // First, position the particles randomly across the screen
-      const particles = particlesRef.current.querySelectorAll('.particle');
+    // Animation context to store all animations for cleanup
+    let ctx = gsap.context(() => {
       
-      particles.forEach((particle, index) => {
-        // Random initial positions
-        const startX = Math.random() * window.innerWidth;
-        const startY = Math.random() * window.innerHeight;
+      // Initialize the particles animation
+      if (particlesRef.current) {
+        const particles = particlesRef.current.querySelectorAll('.particle');
         
-        gsap.set(particle, {
-          x: startX,
-          y: startY,
-          opacity: 0
+        particles.forEach((particle, index) => {
+          // Random initial positions
+          const startX = Math.random() * window.innerWidth;
+          const startY = Math.random() * window.innerHeight;
+          
+          gsap.set(particle, {
+            x: startX,
+            y: startY,
+            opacity: 0
+          });
+          
+          // Fade in with slight delay based on index
+          gsap.to(particle, {
+            opacity: Math.random() * 0.5 + 0.2,
+            duration: 2,
+            delay: index * 0.1
+          });
         });
-        
-        // Fade in with slight delay based on index
-        gsap.to(particle, {
-          opacity: Math.random() * 0.5 + 0.2, // Random opacity between 0.2 and 0.7
-          duration: 2,
-          delay: index * 0.1
-        });
-        
-        // Create random floating animation for each particle
-        const xDistance = Math.random() * 100 - 50; // -50 to 50
-        const yDistance = Math.random() * 100 - 50; // -50 to 50
-        const duration = 5 + Math.random() * 15; // 5 to 20 seconds
-        
-        const particleAnim = gsap.to(particle, {
-          x: `+=${xDistance}`,
-          y: `+=${yDistance}`,
-          duration: duration,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          delay: index * 0.1
-        });
-        
-        animations.push(particleAnim);
-      });
-    }
-
-    // Hero section animations
-    const heroTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.roadmap-hero',
-        start: 'top center',
-        end: 'bottom center',
-        toggleActions: 'play none none reverse'
       }
-    });
-    
-    heroTimeline.from('.hero-title', { y: 50, opacity: 0, duration: 0.8 })
-                .from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.8 }, '-=0.6')
-                .from('.hero-description', { y: 30, opacity: 0, duration: 0.8 }, '-=0.6')
-                .from('.scroll-indicator', { y: -10, opacity: 0, duration: 0.8, repeat: -1, yoyo: true }, '-=0.4');
-    
-    animations.push(heroTimeline);
-    
-    // Section header animations
-    document.querySelectorAll('.section-header').forEach((header) => {
-      try {
-        const headerAnim = gsap.from(header, {
+
+      // Hero animation
+      const heroTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.roadmap-hero',
+          start: 'top center',
+          end: 'bottom center',
+          toggleActions: 'play none none reverse'
+        }
+      });
+      
+      heroTimeline
+        .from('.hero-title', { y: 50, opacity: 0, duration: 0.8 })
+        .from('.hero-subtitle', { y: 30, opacity: 0, duration: 0.8 }, '-=0.6')
+        .from('.hero-description', { y: 30, opacity: 0, duration: 0.8 }, '-=0.6')
+        .from('.scroll-indicator', { y: -10, opacity: 0, duration: 0.8, repeat: -1, yoyo: true }, '-=0.4');
+      
+      // Section header animations
+      document.querySelectorAll('.section-header').forEach((header) => {
+        gsap.from(header, {
           y: 30,
           opacity: 0,
           duration: 0.8,
@@ -168,105 +148,177 @@ const RoadmapPage: React.FC = () => {
             toggleActions: 'play none none none'
           }
         });
-        animations.push(headerAnim);
-      } catch (error) {
-        console.error("Error animating section header:", error);
-        gsap.set(header, { opacity: 1, y: 0 });
-      }
-    });
-    
-    // Technical skills animations
-    document.querySelectorAll('.skill-category').forEach((category, index) => {
-      try {
-        const categoryAnim = gsap.timeline({
-          scrollTrigger: {
-            trigger: category,
-            start: 'top 75%',
-            toggleActions: 'play none none none'
-          }
-        });
-        
-        categoryAnim.from(category.querySelector('.category-title'), { 
-          x: index % 2 === 0 ? -50 : 50, 
-          opacity: 0, 
-          duration: 0.8 
-        });
-        
-        const cards = category.querySelectorAll('.skill-card');
-        categoryAnim.from(cards, { 
-          y: 30, 
-          opacity: 0, 
-          stagger: 0.15, 
-          duration: 0.6 
-        }, '-=0.4');
-        
-        animations.push(categoryAnim);
-      } catch (error) {
-        console.error("Error animating skill category:", error);
-        gsap.set(category.querySelector('.category-title'), { opacity: 1, x: 0 });
-        gsap.set(category.querySelectorAll('.skill-card'), { opacity: 1, y: 0 });
-      }
-    });
-    
-    // Initialize progress bars immediately to their data-level values
-    document.querySelectorAll('.skill-progress-fill, .progress-fill').forEach(fill => {
-      const level = fill.getAttribute('data-level');
-      if (level) {
-        gsap.set(fill, { width: `${level}%` });
-      }
-    });
-    
-    // Animate progress bars
-    document.querySelectorAll('.soft-skill-progress').forEach((progress) => {
-      const progressBar = progress.querySelector('.progress-fill');
-      const level = progressBar?.getAttribute('data-level');
+      });
       
-      if (progressBar && level) {
-        try {
-          const progressAnim = gsap.fromTo(progressBar, 
-            { width: '0%' },
+      // Technical skills animations
+      const skillCategories = document.querySelectorAll('.skill-category');
+      
+      // Animate each skill category 
+      skillCategories.forEach((category, index) => {
+        const categoryTitle = category.querySelector('.category-title');
+        const cards = category.querySelectorAll('.skill-card');
+        
+        ScrollTrigger.create({
+          trigger: category,
+          start: 'top 80%',
+          onEnter: () => {
+            // Animate the category title
+            gsap.fromTo(categoryTitle, 
+              { opacity: 0, x: index % 2 === 0 ? -50 : 50 },
+              { opacity: 1, x: 0, duration: 0.8 }
+            );
+            
+            // Animate the cards with stagger
+            gsap.fromTo(cards,
+              { opacity: 0, y: 30 },
+              { 
+                opacity: 1, 
+                y: 0, 
+                stagger: 0.15, 
+                duration: 0.6,
+                onComplete: () => {
+                  // After cards appear, animate their progress bars
+                  cards.forEach(card => {
+                    const progressFill = card.querySelector('.skill-progress-fill');
+                    if (progressFill) {
+                      const level = progressFill.getAttribute('data-level') || "0";
+                      
+                      gsap.fromTo(progressFill,
+                        { width: "0%" },
+                        { 
+                          width: `${level}%`, 
+                          duration: 1.2, 
+                          ease: "power2.out" 
+                        }
+                      );
+                    }
+                  });
+                }
+              }
+            );
+          },
+          once: true // Only trigger once
+        });
+      });
+      
+      // Soft skills progress bars animation
+      const softSkillItems = document.querySelectorAll('.soft-skill-item');
+      
+      ScrollTrigger.create({
+        trigger: '.soft-skills-container',
+        start: 'top 80%',
+        onEnter: () => {
+          gsap.fromTo(softSkillItems,
+            { opacity: 0, y: 30 },
             { 
-              width: `${level}%`,
-              duration: 1.5,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: progress,
-                start: 'top 85%',
-                toggleActions: 'play none none none'
+              opacity: 1, 
+              y: 0, 
+              stagger: 0.15, 
+              duration: 0.6,
+              onComplete: () => {
+                // After items appear, animate their progress bars
+                softSkillItems.forEach(item => {
+                  const progressFill = item.querySelector('.progress-fill');
+                  if (progressFill) {
+                    const level = progressFill.getAttribute('data-level') || "0";
+                    
+                    gsap.fromTo(progressFill,
+                      { width: "0%" },
+                      { 
+                        width: `${level}%`, 
+                        duration: 1.2, 
+                        ease: "power2.out" 
+                      }
+                    );
+                  }
+                });
               }
             }
           );
-          
-          animations.push(progressAnim);
-        } catch (error) {
-          console.error("Error animating progress bar:", error);
-          gsap.set(progressBar, { width: `${level}%` });
+        },
+        once: true
+      });
+      
+      // Certification items
+      const certificationItems = document.querySelectorAll('.certification-item');
+      
+      const certTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.certifications-container',
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+          once: true
         }
-      }
-    });
+      });
+      
+      // Add all certification items to the timeline with stagger
+      certTimeline.from(certificationItems, {
+        y: 30,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1
+      });
+      
+      // Timeline animations
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      const timelineTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.experience-timeline',
+          start: 'top 75%',
+          toggleActions: 'play none none none',
+          once: true
+        }
+      });
+      
+      timelineTl.from(timelineItems, {
+        opacity: 0,
+        y: 50,
+        stagger: 0.3,
+        duration: 0.8
+      });
+      
+      // Education items
+      const educationItems = document.querySelectorAll('.education-item');
+      
+      gsap.from(educationItems, {
+        opacity: 0,
+        y: 30,
+        stagger: 0.2,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: '.education-container',
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+          once: true
+        }
+      });
+      
+      // Contact section animation
+      const contactItems = [
+        '.contact-text', 
+        '.contact-button', 
+        '.social-links', 
+        '.navigation-buttons'
+      ];
+      
+      const contactTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.contact-section',
+          start: 'top 70%',
+          toggleActions: 'play none none none',
+          once: true
+        }
+      });
+      
+      contactTl.from(contactItems, {
+        opacity: 0,
+        y: 30,
+        stagger: 0.2,
+        duration: 0.8
+      });
+      
+    }, pageWrapperRef); // Scope to page wrapper
     
-    // Animation for certification items
-    document.querySelectorAll('.certification-item').forEach((item, index) => {
-      try {
-        const itemAnim = gsap.from(item, {
-          y: 30,
-          opacity: 0,
-          duration: 0.6,
-          delay: index * 0.1,
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-          }
-        });
-        
-        animations.push(itemAnim);
-      } catch (error) {
-        console.error("Error animating certification item:", error);
-        gsap.set(item, { opacity: 1, y: 0 });
-      }
-    });
-
     // Update active section on scroll
     const updateActiveSection = () => {
       for (const key in sectionsRef.current) {
@@ -285,25 +337,10 @@ const RoadmapPage: React.FC = () => {
     
     window.addEventListener('scroll', updateActiveSection);
     updateActiveSection();
-    
-    // Failsafe for visibility
-    setTimeout(() => {
-      document.querySelectorAll('.skill-category, .soft-skill-item, .education-item, .certification-item, .timeline-item')
-        .forEach(el => {
-          if (window.getComputedStyle(el).opacity === '0') {
-            gsap.set(el, { opacity: 1, y: 0, x: 0 });
-          }
-        });
-    }, 1000);
 
     // Clean up animations when component unmounts
     return () => {
-      animations.forEach((anim: any) => {
-        if (anim.scrollTrigger) {
-          anim.scrollTrigger.kill();
-        }
-        anim.kill();
-      });
+      ctx.revert(); // Clean up all GSAP animations created in this context
       window.removeEventListener('scroll', updateActiveSection);
     };
   }, []);
@@ -438,11 +475,12 @@ const RoadmapPage: React.FC = () => {
                     <div className="skill-level">{skill.level}%</div>
                   </div>
                   <div className="skill-progress">
-                    <div 
-                      className="skill-progress-bar" 
-                      data-level={skill.level}
-                    >
-                      <div className="skill-progress-fill" style={{ width: `${skill.level}%` }}></div>
+                    <div className="skill-progress-bar">
+                      <div 
+                        className="skill-progress-fill" 
+                        data-level={skill.level}
+                        style={{ width: '0%' }} // Initial width of 0 for animation
+                      ></div>
                     </div>
                   </div>
                   <p className="skill-description">{skill.description}</p>
@@ -528,8 +566,8 @@ const RoadmapPage: React.FC = () => {
                 <div className="progress-bg"></div>
                 <div 
                   className="progress-fill" 
-                  data-level={skill.level} 
-                  style={{ width: '0%' }}
+                  data-level={skill.level}
+                  style={{ width: '0%' }} // Initial width of 0 for animation
                 ></div>
               </div>
               <p className="soft-skill-description">{skill.description}</p>

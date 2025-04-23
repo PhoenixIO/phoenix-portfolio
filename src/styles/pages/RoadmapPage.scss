@@ -688,6 +688,8 @@
   /* Contact section */
   .contact-section {
     text-align: center;
+    display: flex;
+    align-items: center;
 
     .contact-text {
       font-size: 1.2rem;
@@ -703,14 +705,15 @@
     
     .contact-button {
       display: inline-block;
+      width: 50%;
       padding: 1rem 2.5rem;
       background: linear-gradient(to right, #7c3aed, #2563eb);
       border-radius: 50px;
       color: white;
       font-size: 1.2rem;
       font-weight: 600;
-      margin-bottom: 2.5rem;
       transition: all 0.3s ease;
+      margin-bottom: 2.5rem;
       
       &:hover {
         transform: translateY(-5px);

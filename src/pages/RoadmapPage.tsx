@@ -596,12 +596,8 @@ const RoadmapPage: React.FC = () => {
           Feel free to reach out - I'm always open to new opportunities and collaborations.
         </p>
         
-        <a 
-          href={`mailto:${contacts.email}`}
-          className="contact-button"
-        >
-          Get In Touch
-        </a>
+
+        <Link to="/contact" className="contact-button">Get In Touch</Link>
         
         <div className="social-links">
           <a href={contacts.github} target="_blank" rel="noopener noreferrer" className="social-link github">

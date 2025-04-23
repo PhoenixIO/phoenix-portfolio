@@ -25,14 +25,17 @@ export const projects: Project[] = [
   },
   {
     id: 2,
-    title: 'CryptoSlither',
-    description: 'CryptoSlither – a multiplayer slither.io-style game with an integrated cryptocurrency system and real-time PvP mechanics.',
+    title: 'Swordbattle.io',
+    description: 'Swordbattle.io is an online sword fighting io game! Fight with friends and enemies in this multiplayer battle arena! Collect coins to be huge, rule the land and upgrade your character.',
     images: [
-      '/projects/crypto.slither/Screenshot_666.png',
-      '/projects/crypto.slither/Screenshot_171.png',
-      '/projects/crypto.slither/Screenshot_276.png',
+      '/projects/swordbattle.io/Screenshot_2.png',
+      '/projects/swordbattle.io/Screenshot_3.png',
+      '/projects/swordbattle.io/Screenshot_4.png',
+      '/projects/swordbattle.io/Screenshot_1.png',
+      '/projects/swordbattle.io/Screenshot_169.png',
     ],
-    technologies: ['Canvas', 'JavaScript', 'express', 'React'],
+    technologies: ['Phaser', 'TypeScript', 'uWebSockets'],
+    demoUrl: 'https://swordbattle.io/',
     featured: true
   },
   {
@@ -50,6 +53,30 @@ export const projects: Project[] = [
   },
   {
     id: 4,
+    title: 'Clipper',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
+    images: [
+      '/projects/clipper/Screenshot_1.png',
+    ],
+    technologies: ['TypeScript', 'React', 'Tailwind', 'fastify', 'RestAPI', 'Swagger'],
+    demoUrl: 'https://dev.clipper.io/',
+    codeUrl: '',
+    featured: true
+  },
+  {
+    id: 5,
+    title: 'CryptoSlither',
+    description: 'CryptoSlither – a multiplayer slither.io-style game with an integrated cryptocurrency system and real-time PvP mechanics.',
+    images: [
+      '/projects/crypto.slither/Screenshot_666.png',
+      '/projects/crypto.slither/Screenshot_171.png',
+      '/projects/crypto.slither/Screenshot_276.png',
+    ],
+    technologies: ['Canvas', 'JavaScript', 'express', 'React'],
+    featured: true
+  },
+  {
+    id: 6,
     title: 'CosmoTravel',
     description: 'CosmoTravel – a space-themed website designed to capture the beauty of the cosmos; winner of a Web Design competition (see certificate in Projects).',
     images: [
@@ -63,30 +90,18 @@ export const projects: Project[] = [
     featured: false
   },
   {
-    id: 5,
+    id: 7,
     title: 'Vinnitsia Castles',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
     images: [
       '/projects/castles/Screenshot_98.png',
     ],
     technologies: ['React', 'JavaScript', 'SASS'],
-    demoUrl: '',
+    codeUrl: 'https://github.com/PhoenixIO/castles',
     featured: false
   },
   {
-    id: 6,
-    title: 'Clipper',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
-    images: [
-      '/projects/clipper/Screenshot_1.png',
-    ],
-    technologies: ['TypeScript', 'React', 'Tailwind', 'fastify', 'RestAPI', 'Swagger'],
-    demoUrl: 'https://dev.clipper.io/',
-    codeUrl: '',
-    featured: true
-  },
-  {
-    id: 6,
+    id: 8,
     title: 'Drivva',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
     images: [
@@ -96,15 +111,4 @@ export const projects: Project[] = [
     demoUrl: 'https://drivva.com/',
     featured: true
   },
-  {
-    id: 6,
-    title: 'Swordbattle.io',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet.',
-    images: [
-      '/projects/swordbattle.io/Screenshot_169.png',
-    ],
-    technologies: ['Phaser', 'TypeScript', 'uWebSockets'],
-    demoUrl: 'https://swordbattle.io/',
-    featured: true
-  }
 ];

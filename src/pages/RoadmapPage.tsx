@@ -4,106 +4,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { skills } from '../data/skills';
 import { contacts } from '../data/contacts';
-import { certificates } from '@/data/certificates';
+import CertificateModal from '@/components/common/CertificateModal';
+import { Certificate, certificates } from '@/data/certificates';
 import '../styles/pages/RoadmapPage.scss';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
-
-// Certificate interface (this would typically be defined in a types file)
-interface Certificate {
-  id: number;
-  name: string;
-  issuer: string;
-  year: number;
-  filePath: string;
-  fileType: 'pdf' | 'jpg' | 'png';
-}
-
-// Custom PDF Viewer component
-const PDFViewer = ({ pdfPath }: { pdfPath: string }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  
-  return (
-    <div className="pdf-viewer">
-      <div className="pdf-controls">
-        <button 
-          className="pdf-control-button"
-          disabled={currentPage <= 1}
-          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-        >
-          Previous
-        </button>
-        <span className="pdf-page-indicator">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button 
-          className="pdf-control-button"
-          disabled={currentPage >= totalPages}
-          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-        >
-          Next
-        </button>
-      </div>
-      <div className="pdf-container">
-        <embed 
-          src={`${pdfPath}#page=${currentPage}`}
-          type="application/pdf" 
-          width="100%" 
-          height="100%" 
-          onLoad={() => setTotalPages(totalPages)}
-        />
-      </div>
-    </div>
-  );
-};
-
-// Certificate Modal Component
-const CertificateModal = ({ 
-  certificate, 
-  onClose 
-}: { 
-  certificate: Certificate | null, 
-  onClose: () => void 
-}) => {
-  if (!certificate) return null;
-  
-  const renderCertificateContent = () => {
-    switch (certificate.fileType) {
-      case 'pdf':
-        return <PDFViewer pdfPath={certificate.filePath} />;
-      case 'jpg':
-      case 'png':
-        return (
-          <img 
-            src={certificate.filePath} 
-            alt={certificate.name} 
-            className="certificate-image" 
-          />
-        );
-      default:
-        return <p>Unsupported file format</p>;
-    }
-  };
-  
-  return (
-    <div className="certificate-modal-overlay" onClick={onClose}>
-      <div className="certificate-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="certificate-modal-header">
-          <h2>{certificate.name}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
-        </div>
-        <div className="certificate-modal-body">
-          {renderCertificateContent()}
-        </div>
-        <div className="certificate-modal-footer">
-          <p>{certificate.issuer} - {certificate.year}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Group skills by category
 const skillsByCategory = skills.reduce((acc, skill) => {

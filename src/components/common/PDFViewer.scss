@@ -1,0 +1,83 @@
+@use '@/styles/variables' as vars;
+@use '@/styles/mixins';
+
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .pdf-controls {
+    display: flex;
+    justify-content: center;
+    padding: 0.8rem 0;
+    gap: 1rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px 8px 0 0;
+    flex-shrink: 0; /* Prevent controls from shrinking */
+    
+    @include mixins.responsive(mobile) {
+      flex-wrap: wrap;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+  }
+  
+  .pdf-control-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    
+    @include mixins.responsive(mobile) {
+      padding: 0.4rem 0.7rem;
+      font-size: 0.8rem;
+    }
+    
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .pdf-page-indicator {
+    color: vars.$text-secondary;
+    
+    @include mixins.responsive(mobile) {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .pdf-container {
+    flex: 1;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    height: calc(100% - 60px); /* Adjusted for control height + padding */
+    
+    /* Remove fixed minimum height to be more responsive */
+    @include mixins.responsive(mobile) {
+      height: calc(100% - 50px);
+    }
+    
+    embed {
+      border: none;
+      background: white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

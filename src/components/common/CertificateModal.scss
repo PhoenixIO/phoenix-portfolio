@@ -1,0 +1,206 @@
+@use '@/styles/variables' as vars;
+@use '@/styles/mixins';
+
+.certificate-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  padding: 1rem;
+
+  .certificate-modal-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    
+    /* PDF mode - full height */
+    &.pdf-mode {
+      height: 95vh;
+      max-height: 95vh;
+      
+      .certificate-modal-body {
+        height: calc(95vh - 130px); /* Adjusted to account for footer height */
+      }
+    }
+    
+    @include mixins.responsive(mobile) {
+      width: 95%;
+      max-height: 95vh;
+    }
+  }
+  
+  .certificate-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    h2 {
+      margin: 0;
+      color: white;
+      font-size: 1.5rem;
+      
+      @include mixins.responsive(mobile) {
+        font-size: 1.2rem;
+      }
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+      }
+    }
+  }
+  
+  .certificate-modal-body {
+    flex: 1;
+    overflow: auto;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    min-height: 300px;
+    position: relative;
+  }
+  
+  .certificate-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: vars.$text-secondary;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    
+    p {
+      margin: 0;
+    }
+    
+    .zoom-indicator {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Image container styles with zoom support */
+  .certificate-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .certificate-image {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  
+  /* Zoom controls */
+  .zoom-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+  
+  .zoom-button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    padding: 0;
+    
+    &.reset-zoom {
+      width: auto;
+      font-size: 0.8rem;
+      padding: 0 8px;
+    }
+    
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  @include mixins.responsive(mobile) {
+    .zoom-controls {
+      bottom: 5px;
+      right: 5px;
+    }
+    
+    .zoom-button {
+      width: 26px;
+      height: 26px;
+      
+      &.reset-zoom {
+        font-size: 0.7rem;
+        padding: 0 5px;
+      }
+    }
+  }
+}

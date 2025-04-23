@@ -55,47 +55,6 @@
     }
   }
   
-  .filter-container {
-    position: relative;
-    z-index: vars.$z-content;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 3rem;
-    padding: 0 2rem;
-    
-    .categories-filter {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      
-      .filter-btn {
-        padding: 0.5rem 1.2rem;
-        border: none;
-        border-radius: 25px;
-        background: rgba(255, 255, 255, 0.1);
-        color: vars.$text-primary;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: vars.$transition-default;
-        border: 1px solid transparent;
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.2);
-          transform: translateY(-3px);
-        }
-        
-        &.active {
-          background: vars.$primary-gradient;
-          color: white;
-          font-weight: 600;
-          border-color: rgba(255, 255, 255, 0.3);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-      }
-    }
-  }
-  
   .projects-grid {
     position: relative;
     z-index: vars.$z-content;
@@ -132,6 +91,17 @@
         width: 100%;
         height: 200px;
         overflow: hidden;
+        
+        .project-thumbnail {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+          
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
         
         .image-placeholder {
           width: 100%;
@@ -224,7 +194,7 @@
       position: relative;
       background: #121218;
       border-radius: 10px;
-      max-width: 900px;
+      max-width: 1200px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
@@ -297,6 +267,76 @@
               &.large {
                 .project-initial {
                   font-size: 4rem;
+                }
+              }
+            }
+            
+            .image-slider {
+              width: 100%;
+              border-radius: 8px;
+              overflow: hidden;
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+              
+              .slider-image-container {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                position: relative;
+                overflow: hidden;
+                
+                .slider-image {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  transition: transform 0.3s ease;
+                }
+              }
+              
+              .slider-controls {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.8rem;
+                background: rgba(0, 0, 0, 0.3);
+                
+                .slider-btn {
+                  width: 36px;
+                  height: 36px;
+                  border-radius: 50%;
+                  background: rgba(255, 255, 255, 0.2);
+                  border: none;
+                  color: white;
+                  font-size: 1.2rem;
+                  line-height: 1;
+                  cursor: pointer;
+                  transition: background 0.3s ease;
+                  
+                  &:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                  }
+                }
+                
+                .slider-pagination {
+                  display: flex;
+                  gap: 0.5rem;
+                  
+                  .pagination-dot {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.3);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    
+                    &.active {
+                      background: white;
+                      width: 20px;
+                      border-radius: 5px;
+                    }
+                    
+                    &:hover {
+                      background: rgba(255, 255, 255, 0.6);
+                    }
+                  }
                 }
               }
             }
